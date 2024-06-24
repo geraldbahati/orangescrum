@@ -37,13 +37,13 @@
                   </div>
               </li>
                <li class="li_check_radio border-bottom padbtmset">
-                  
-              </li>              
-            <?php $taskFileds = Configure::read('PROJECT_FIELDS');	
+
+              </li>
+            <?php $taskFileds = Configure::read('PROJECT_FIELDS');
             $selectedColumns = explode(',',$defaultfields['TaskField']['project_form_fields']);
-            	foreach($taskFileds as $k=>$v){ 
+            	foreach($taskFileds as $k=>$v){
             		if($v['is_default'] == 0){ ?>
-            <?php if($v['label'] == "Client" || $v['label'] == "Budget" || $v['label'] == "Default Rate" || $v['label'] == "Cost Appr" || $v['label'] == "Min & Max Tolerance"){ 
+            <?php if($v['label'] == "Client" || $v['label'] == "Budget" || $v['label'] == "Default Rate" || $v['label'] == "Cost Appr" || $v['label'] == "Min & Max Tolerance"){
             	$show_lb = 0;
             	switch ($v['label']) {
             		case 'Client':
@@ -87,13 +87,13 @@
           </ul>
       </span>
 			<?php } ?>
-			
+
 			<?php if(!isset($_COOKIE['FIRST_INVITE_2'])){ /* ?>
 				<a class="btn q_tour_btn p_q_tour_btn right200" href="javascript:void(0);" onclick="startTourProject();" title="<?php echo __('Quick Tour');?>" rel="tooltip">
 					<div class="tour_icon"></div>
 				</a>
 			<?php */} ?>
-			
+
         </div>
 		<input type="hidden" id="short_nm_prj_new" value="0"/>
         <?php echo $this->Form->create('Project', array('url' => '/projects/add_project', 'name' => 'projectadd', 'onsubmit' => 'return projectAdd(\'txt_Proj\',\'txt_shortProj\',\'loader\',\'btn\')')); ?>
@@ -129,7 +129,7 @@
 					</select>
                 </div>
 			</div>
-				
+
 					<div class="w_b project-field-4 mtop15 project-field-all">
 						<div class="form-group label-floating " style="top:-5px;">
 							<label class="control-label" for="prj_desc"><?php echo __('Describe your project');?></label>
@@ -148,7 +148,7 @@
                        <a href="javascript:void(0);" class="onboard_help_anchor all-proj-task" onclick="openHelpWindow('https://helpdesk.orangescrum.com/cloud/can-i-change-to-scrum-interface-while-in-simple-project-management-interface/<?= HELPDESK_URL_PARAM ?>');" title="<?php echo __('Get quick help on Project Template');?>" rel="tooltip" ><span class="help-icon"></span></a>
 
 					</div>
-					
+
                     <div class="w_a project-field-7 mtop15 project-field-all">
                         <div class="" id="wrkflow_dropdown">
                             <select class="select form-control floating-label" placeholder="<?php echo __('Choose a workflow');?>" data-dynamic-opts=true></select>
@@ -157,11 +157,11 @@
                        <a href="javascript:void(0);" class="onboard_help_anchor all-proj-task" onclick="openHelpWindow('https://helpdesk.orangescrum.com/cloud/how-can-i-add-custom-workflow-to-project/<?= HELPDESK_URL_PARAM ?>');" title="<?php echo __('Get quick help on Workflow');?>" rel="tooltip" ><span class="help-icon"></span></a>
 
                     </div>
-					
-					
-					
-				
-				<div class="w_a project-field-9 mtop15 project-field-all" id="more_proj_options_new">			
+
+
+
+
+				<div class="w_a project-field-9 mtop15 project-field-all" id="more_proj_options_new">
 					<div class="padlft-non" id="ProjEsthr">
 						<div class="form-group">
 							<label class="control-label control-label-manual" for="txt_ProjEsthr"><?php echo __('Estimated Hours');?>
@@ -186,7 +186,7 @@
 							<div class="col-lg-6 col-sm-6 padlft-non">
 								<div class="form-group">
 									<label class="control-label control-label-manual" for="txt_ProjStartDate"><?php echo __('Date Range');?>
-									  <a href="javascript:void(0);" class="onboard_help_anchor" onclick="openHelpWindow('https://helpdesk.orangescrum.com/cloud/how-to-create-a-project/<?= HELPDESK_URL_PARAM ?>#date');" title="<?php echo __('Get  quick help on Date Range');?>" rel="tooltip" ><span class="help-icon"></span></a>                                       
+									  <a href="javascript:void(0);" class="onboard_help_anchor" onclick="openHelpWindow('https://helpdesk.orangescrum.com/cloud/how-to-create-a-project/<?= HELPDESK_URL_PARAM ?>#date');" title="<?php echo __('Get  quick help on Date Range');?>" rel="tooltip" ><span class="help-icon"></span></a>
 									</label>
 									<?php echo $this->Form->text('start_date', array('value' => '', 'class' => 'datepicker form-control', 'id' => 'txt_ProjStartDate', 'placeholder' => __('Start Date',true), 'readonly' => 'true')); ?>
 								</div>
@@ -216,95 +216,21 @@
 								</div>
 						<div class="cb"></div>
 					</div>
-					
-					
+
+
 					</div>
-      
+
 				</div>
 			</div>
-			
-			
-            <?php if (!isset($is_active_proj) || $is_active_proj) { ?>
-
-                <div class="w_c project-field-14 mtop15 project-field-all">
-                	<div class="row">
-                    <div class="col-lg-12 padlft-non padrht-non">
-                        <p>
-						<span id="add_new_member_txt" class="fl"><?php echo (count($userArr) < 2) ? __("Add new Users") : __("Add Users"); ?></span> <span class="fl">(<?php echo __('optional');?>)</span>
-						<span class="checkbox custom-checkbox add-all-adminuser fl" style="margin-left:20px;">
-							<label class="">
-								<input type="checkbox" id="alladmn_users" onclick="checkUncheckAdmnUsers();" checked="checked" />
-								<span title="All Admins including Owner"><?php echo __('All');?></span>
-							</label>
-						</span>
-						<span class="cb"></span>
-						</p> <br /><br />
-                        <div <?php if ($GLOBALS['project_count'] == 0) { ?> style="display:none;" <?php } ?>>
-                            <?php foreach ($userArr AS $k => $usr) { ?>
-                                <div class="checkbox custom-checkbox add-user-pro-chk">
-                                    <label>
-                                        <input type="checkbox" checked="checked" name="data[Project][members][]" class="proj_mem_chk" onclick="addremoveadmin(this)"  value="<?php echo $usr['User']['id']; ?>"/>
-                                        <span class="oya-blk" id="puser<?php echo $usr['User']['id']; ?>">
-                                            <span title="<?php echo h($usr['User']['name']);?>" rel="tooltip">
-                                                <?php echo $this->Text->truncate(h($usr['User']['name']),16,array('ellipsis' => '...','exact' => true)); ?>
-                                            </span>
-                                            <?php if ($usr['CompanyUser']['user_type'] == 1) { ?>
-                                                <small class="green-txt">(owner)</small>
-                                            <?php } else if ($usr['CompanyUser']['user_type'] == 3) { ?>
-                                                <small class="green-txt">(<?php echo __('You');?>)</small>
-                                            <?php } else { ?>
-                                                <small class="green-txt">(<?php echo __('admin');?>)</small>
-                                            <?php } ?>
-                                        </span>
-                                    </label>
-                                </div>
-                            <?php } ?>
-                            <div class="checkbox custom-checkbox add-all-user  <?php if(!$this->Format->isAllowed('Add New User',$roleAccess)){ ?> no-pointer<?php } ?>">
-                                <label class="mtop15">
-                                    <input type="checkbox" id="allc_users" onclick="chooseAllCompUsers();"/>
-                                    <span><?php echo __('Add all users (including clients)');?></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mtop15">
-	                <div class="col-lg-12 padlft-non padrht-non">
-                 <div class="form-group label-floating <?php if(!$this->Format->isAllowed('Add New User',$roleAccess)){ ?> no-pointer<?php } ?>">
-                    <label class="control-label" for="members_list"><?php echo __('Email ID');?></label>
-	                    <textarea id="members_list"  class="wickEnabled form-control input-lg expand hideoverflow m_0" rows="1" wrap="virtual" name="data[Project][members_list]" placeholder="" <?php if ($user_subscription['trial_expired'] == 1 && $user_subscription['subscription_id'] == 11) { ?>disabled="disabled" <?php } ?>></textarea>
-                    <div id="err_mem_email" style="display: none;color: #FF0000;"></div>
-                    <div id="autopopup" style="position:absolute;"></div>
-                    <p class="comma-seprate-txt"><?php if ($user_subscription['trial_expired'] == 1 && $user_subscription['subscription_id'] == 11) { ?><?php echo __('Upgrade your account to add new user(s)');?><?php } else { ?><?php echo __('Use comma separators for multiple email id');?><?php } ?></p>
-                </div>
-                </div>
-        		</div>
-                </div>
-            
-               
-            <?php } ?>
-            <!-- <div class="row ">
-                <div class="col-lg-12 more-opt">
-					<p class="blue-txt" style="margin-bottom:0px;"><a href="javascript:void(0);" class="" id="more_proj_options"><?php echo __('Hide options');?></a></p>
-				</div>
-			</div> -->
         </div>
         <div class="modal-footer popup-footer popup_sticly_cta">
             <div class="fr popup-btn">
-				<?php /*if(!isset($_COOKIE['FIRST_INVITE_2'])){ ?>
-								<div class="quick_tourbtn">
-									<a class="btn q_tour_btn" href="javascript:void(0);" onclick="startTourProject();">
-										<div class="tour_icon"></div>
-										<?php echo __('Quick Tour');?>
-									</a>
-								</div>
-				<?php } */ ?>
                 <?php
                 $totProj = "";
                 if ((!$user_subscription['is_free']) && ($user_subscription['project_limit'] != "Unlimited")) {
                     $totProj = $this->Format->checkProjLimit($user_subscription['project_limit']);
                 } ?>
-                
+
                 <?php if ($totProj && $totProj >= $user_subscription['project_limit']) { ?>
                     <?php if (SES_TYPE == 3) { ?>
                         <font color="#FF0000"><?php echo __('Sorry, Project Limit Exceeded');?>!</font>
@@ -344,7 +270,7 @@
     </div>
 </div>
 <script type="text/javascript">
-	function checkUncheckAdmnUsers(){	
+	function checkUncheckAdmnUsers(){
 		if($('#alladmn_users').is(':checked')){
 			$('.proj_mem_chk').prop('checked',true);
 		}else{
@@ -354,12 +280,12 @@
    function closeSession1(){
 	   var inValid=/projects\/manage/;
 	   var inValidTask=/dashboard#/;
-	   if(inValid.test(window.location.href)){		   
+	   if(inValid.test(window.location.href)){
 			GBl_tour= tour_project<?php echo LANG_PREFIX;?>;
-	   }else if(inValidTask.test(window.location.href)){		   
+	   }else if(inValidTask.test(window.location.href)){
 			GBl_tour= tour<?php echo LANG_PREFIX;?>;
 	   }else{
-			GBl_tour= tour<?php echo LANG_PREFIX;?>; 
+			GBl_tour= tour<?php echo LANG_PREFIX;?>;
 	   }
         <?php if($this->Session->read('project_url')=='create_project'){
                 unset($_SESSION['project_url']);
@@ -399,22 +325,22 @@
                 });
         $('#err_msg').html('');
          $("#txt_ProjStartDate").datepicker({format: 'M d, yyyy',todayHighlight: true,changeMonth: false,changeYear: false,hideIfNoPrevNext: true,autoclose: true
-	 	}).on('changeDate', function(e) {    	
+	 	}).on('changeDate', function(e) {
 	    	$("#txt_ProjEndDate").datepicker("setStartDate", $("#txt_ProjStartDate").datepicker('getFormattedDate'));
 		});
 
 	    $("#txt_ProjEndDate").datepicker({format: 'M d, yyyy',todayHighlight: true,changeMonth: false,changeYear: false,hideIfNoPrevNext: true,autoclose: true
-	    }).on('changeDate', function(e) {    	
+	    }).on('changeDate', function(e) {
 	    	$("#txt_ProjStartDate").datepicker("setEndDate", $("#txt_ProjEndDate").datepicker('getFormattedDate'));
 		});
         // $(".input-daterange").datepicker({format: 'M d, yyyy',hideIfNoPrevNext: true,todayBtn: "linked",todayHighlight: true,autoclose: true});
-        
+
         $('#members_list').on('keyup',function(){
             var aval = $(this).val().trim();
             if(aval == ''){ $('#allc_users').prop('checked',false); }
         });
     });
-		
+
 	function changeProjectClient(obj){
 		var clnt_val = 	$.trim($('#proj_client').val());
 		var cust_val = 	$.trim($('#proj_client option:selected').attr('data-cust'));
@@ -444,7 +370,7 @@
 				if($('#add_instant_customer').is(':visible')){
 					addCancelCustomer();
 				}
-			}else{			
+			}else{
 				$('#proj_currency').val(144).select2();
 				$('.proj_currency').trigger('change');
 			addCancelCustomer();
@@ -455,5 +381,5 @@
 		$('#proj_cust_fname').val('');
 		$('#proj_cust_email').val('');
 		$('#add_instant_customer').slideToggle();
-	} 
+	}
 </script>

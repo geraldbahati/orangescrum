@@ -399,23 +399,6 @@ var rel_arr = new Array();
                                 <% } %>
                                 <% } %>
                                 <% } %>
-								
-								
-                                <% if(isAllowed('Create Task',projectUniqid)){ 
-                                  	if((getdata.Easycase.is_sub_sub_task==null) || (getdata.Easycase.is_sub_sub_task=='')){ %> 
-									
-                                    <li onclick="addSubtaskPopup(<%= '\'' + projectUniqid + '\'' %>,<%= '\'' + getdata.Easycase.id + '\'' %>,<%= '\'' + getdata.Easycase.project_id + '\'' %>,<%= '\'' + getdata.Easycase.uniq_id + '\'' %>,<%= '\'' + getdata.Easycase.title + '\'' %>);trackEventLeadTracker(<%= '\'Kanban Page\'' %>,<%= '\'Create Sub task\'' %>,<%= '\'<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>\'' %>);">
-                                        <a href="javascript:void(0);"><i class="material-icons"></i><?php echo __('Create Subtask');?></a>
-                                    </li>
-								<% } }%>
-								<% if(caseParenId){ %>
-										  <?php if($this->Format->isAllowed('Change Other Details of Task',$roleAccess)){ ?>
-                                        <li onclick="convertToParentTask(<%= '\''+ caseAutoId+'\'' %>);trackEventLeadTracker(<%= '\'Kanban Page\'' %>,<%= '\'Convert To Parent Task\'' %>,<%= '\'<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>\'' %>);" id="convertToTask<%= caseAutoId %>" style=" <% if(showQuickActiononList){ %>display:block <% } else { %>display:none<% } %>">
-                                              <a href="javascript:void(0);"><i class="material-icons">&#xE15A;</i><?php echo __('Convert To Parent');?></a>
-                                        </li>
-                                      <?php } ?>
-									  
-									 <% } %>
 									 <% if(caseParenId == "" || caseParenId == null){ %>
 									 <%	if((getdata.Easycase.sub_sub_task==null) || (getdata.Easycase.sub_sub_task =="") || (getdata.Easycase.sub_sub_task ==0)){  %>
 										  <?php if($this->Format->isAllowed('Change Other Details of Task',$roleAccess)){ ?>

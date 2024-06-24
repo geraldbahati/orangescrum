@@ -1,12 +1,12 @@
 <?php $page_array = array('glide_chart', 'hours_report', 'chart', 'weeklyusage_report','pending_task','completed_sprint_report','velocity_reports'); ?>
 <style type="text/css">
-	
+
 	.new_back_icon {font-size: 14px;left: 10%;margin-top: 90px;position:fixed;top: 29%;z-index: 999;color:#A6A6A6;}
 	.left-menu-panel .side-nav li .fixleft-submenu ul li:hover a{color:#F6911D}
 	.new_back_icon:hover {color:#0091EA;}
 	.left_panel_other_link {display:none;}
 	<?php if ($_COOKIE['FIRST_INVITE_1'] && 1 != 1) {  ?>
-    .gray-out,.gray-out-sub,.gray-out-quick,.gray-out-setting{width:100%; height:100%;background-color: gray;opacity: .8; position:absolute;z-index:1000;}   
+    .gray-out,.gray-out-sub,.gray-out-quick,.gray-out-setting{width:100%; height:100%;background-color: gray;opacity: .8; position:absolute;z-index:1000;}
     .gray-out-sub{left:0px; height:160px;}
     #new_onboarding_add_icon,#new_onboarding_add_icon a,.show_new_add_div{z-index: 1001;}
     .gray-out-quick{left:0px;top:0px;}
@@ -19,9 +19,9 @@
 		.big-sidebar .left_panel_ntother_link,.projectMenuLeft,.projectReportMenuLeft{display:block;}
     <?php } else if(CONTROLLER == "projects" && (PAGE_NAME == "manage")){ /* ?>
       .big-sidebar .left_panel_other_link,.big-sidebar .recent_visited_projects{display:block;}
-			.big-sidebar .left_panel_ntother_link,.big-sidebar .view_tasks_menu,.big-sidebar .caseMenuLeft,.big-sidebar .projectReportMenuLeft{display:none;}      
+			.big-sidebar .left_panel_ntother_link,.big-sidebar .view_tasks_menu,.big-sidebar .caseMenuLeft,.big-sidebar .projectReportMenuLeft{display:none;}
 		<?php  */ } else if ((CONTROLLER == 'ProjectReports' || CONTROLLER == 'project_reports' || in_array(PAGE_NAME, $page_array))) {  ?>
-		.big-sidebar .projectReportMenuLeft .left-palen-submenu-items{display:block;} 
+		.big-sidebar .projectReportMenuLeft .left-palen-submenu-items{display:block;}
     <?php  }else{ ?>
 		.big-sidebar .left_panel_other_link,.big-sidebar .view_tasks_menu,.big-sidebar .recent_visited_projects,.big-sidebar .recent_visited_project_reports{display:none;}
 		.big-sidebar .left_panel_ntother_link{display:block;}
@@ -36,11 +36,11 @@
 	<?php if(CONTROLLER == 'ganttchart' && PAGE_NAME == 'ganttv2'){ ?>
 		body.open_hellobar .rht_content_cmn.task_lis_page .wrapper {padding-top:45px;}
 	<?php } ?>
-	
+
 </style>
 <?php $sub_text_class = $this->Format->getsubmenucolor($theme_settings['sidebar_color']); ?>
 <div class="main-container">
-	<div class="left-menu-panel<?php echo ' cmn_white_bg';?>" <?php if(PAGE_NAME == 'help_support'){ ?> style="display:none;"<?php } ?> > 
+	<div class="left-menu-panel<?php echo ' cmn_white_bg';?>" <?php if(PAGE_NAME == 'help_support'){ ?> style="display:none;"<?php } ?> >
 		<aside class="option_menu_panel">
 			<?php
         $shw = 1;
@@ -84,29 +84,12 @@
 										</li>
 									<?php } ?>
 								<?php } ?>
-								<?php if($_SESSION['project_methodology'] != 'scrum'){ ?>
-									<?php /*if($this->Format->isAllowed('Create Milestone',$roleAccess)){ ?>
-										<li class="qadd-tg-icon hide-in-scrum" <?php if($_SESSION['project_methodology'] == 'scrum'){ echo "style='display:none;'";}?>>
-											<a href="javascript:void(0)" onclick="setSessionStorage('Left Panel New Button', 'Create Task Group');addEditMilestone('', '', '', '', '', '');">
-												<i class="material-icons cmn-icon-prop">&#xE065;</i><?php echo __('Task Group'); ?>
-											</a>
-										</li>
-									<?php */} ?>
-								<?php //} ?>
-								<?php if ($this->Format->isAllowed('Add New User',$roleAccess)) { ?>
-									<?php if($this->Format->isAllowed('Add New User',$roleAccess)){ ?>
-										<li>
-											<a href="javascript:void(0)" onclick="setSessionStorage('Left Panel New Button', 'Invite User');newUser()">
-												<i class="material-icons cmn-icon-prop">&#xE7FB;</i><?php echo __('User'); ?>
-											</a>
-										</li>
-									<?php } } ?>
 							</ul>
 						</div>
 					</div>
 					<ul class="side-nav sidebar-menu" id="side-menu-dynamic-cnt">
 						<div class="gray-out"></div>
-						<?php //if(!empty($checked_left_menu_submenu['checked_left_menu'])){ 
+						<?php //if(!empty($checked_left_menu_submenu['checked_left_menu'])){
 							$cstm_order = Cache::read('menuOrderlists'); ?>
 							<?php echo $this->element('custom_left_menu_new',array('checked_left_menu_submenu'=>$checked_left_menu_submenu,'roleAccess'=>$roleAccess,'page_array'=>$page_array,'left_menu_exist'=>$left_menu_exist,'sub_text_class'=>$sub_text_class,'exp_plan'=>$exp_plan,'cstm_order'=>$cstm_order[$_SESSION['project_template_view_id']]));?>
 							<?php //}else{} ?>
@@ -162,7 +145,7 @@
 									<i class="left-menu-icon material-icons">&#xE915;</i>
 									<span class="mini-sidebar-label"><?php echo __('Invoices'); ?></span>
 								</a>
-							</li>                
+							</li>
 						</ul>
 					</div>
 				<?php } ?>
@@ -172,7 +155,7 @@
 	<div class="<?php if (PAGE_NAME != "updates" && PAGE_NAME != "help" && PAGE_NAME != "tour" && PAGE_NAME != "customer_support" && PAGE_NAME != 'onbording') { ?>rht_content_cmn<?php } else { ?>rht_content_cmn_help<?php } ?> task_lis_page">
 		<?php echo $this->element('top_bar_v2'); ?>
 		<?php if (PAGE_NAME != "updates" && PAGE_NAME != "help" && PAGE_NAME != "tour" && PAGE_NAME != "customer_support" && PAGE_NAME != 'onbording') { ?>
-			<!-- breadcrumb -->  
+			<!-- breadcrumb -->
 			<input type="hidden" id="checkload" value="0">
 		<?php } ?>
 		<div class="wrapper">
@@ -184,7 +167,7 @@
 			</div>
 			<?php //} ?>
 			<?php echo $this->element('popup'); ?>
-			<div class="slide_rht_con" <?php if (PAGE_NAME == 'updates') { ?>style="width: 100%;padding: 0px;"<?php } ?>>    
+			<div class="slide_rht_con" <?php if (PAGE_NAME == 'updates') { ?>style="width: 100%;padding: 0px;"<?php } ?>>
 				<?php echo $this->fetch('content'); ?>
 				<script>
 					var elem = document.querySelector('#beforeRenderPage');elem.parentNode.removeChild(elem);
@@ -194,7 +177,7 @@
 		<script>
 			<?php if ((CONTROLLER == "templates") || (CONTROLLER == "archives" && PAGE_NAME == "listall")) { ?>
 				$('.big-sidebar').find('.template-menu').show();
-				//$('.mini-sidebar').find('.template-menu-parent').addClass('active'); 
+				//$('.mini-sidebar').find('.template-menu-parent').addClass('active');
 				<?php } else { ?>
 				$('.template-menu').hide();
 			<?php } ?>
@@ -206,7 +189,7 @@
 				});
 			});
 		</script>
-		<?php $fst_invite = 0; 
+		<?php $fst_invite = 0;
 			if(in_array($GLOBALS['user_subscription']['subscription_id'],array(11,13))){
 				if (isset($_COOKIE['FIRST_INVITE_2'])) {
 					$fst_invite = 1;
@@ -240,7 +223,7 @@
 						//beforeOnboarding(fst_invite_phn); callback pop up
 						//setTimeout(newOnboardingChk, 1000);
 						newOnboardingChk();
-						
+
 						}else if (fst_invite == '1') {
 						//setTimeout(startTour, 1000);
 						//setTimeout(newOnboardingChk, 1000);
@@ -298,17 +281,17 @@
 					if(getHash() =='timelog' || getHash() =='timesheet_weekly' ||  getHash() =='timesheet_daily' || PAGE_NAME=="resource_availability" ||  getHash() =='chart_timelog' ||  getHash() =='calendar_timelog'){
 						$(".menu-logs").find('.left-palen-submenu').removeClass('glyphicon-menu-right').addClass('glyphicon-menu-down');
 						$(".menu-logs").find('.left-palen-submenu-items').show();
-						
+
 					}
 					if(getHash() =='files' || getHash() =='caselist' || PAGE_NAME=="invoice" || PAGE_NAME=="groupupdatealerts" ||  CONTROLLER =='templates'){
 						$(".Miscl_list").find('.left-palen-submenu').removeClass('glyphicon-menu-right').addClass('glyphicon-menu-down');
 						$(".Miscl_list").find('.left-palen-submenu-items').show();
-						
+
 					}
 					if(getHash() =='tasks' || getHash() =='taskgroup' || getHash() =='kanban' || getHash() =='calendar' || getHash() =='details' || getHash() =='milestonelist'){
 						$(".caseMenuLeft").find('.left-palen-submenu').removeClass('glyphicon-menu-right').addClass('glyphicon-menu-down');
 						$(".caseMenuLeft").find('.left-palen-submenu-items').show();
-					} 
+					}
 					<?php if((CONTROLLER == 'ProjectReports' || CONTROLLER == 'project_reports' || in_array(PAGE_NAME, $page_array))){ ?>
 						$(".projectReportMenuLeft").find('.left-palen-submenu').removeClass('glyphicon-menu-right').addClass('glyphicon-menu-down');
 						$(".projectReportMenuLeft").find('.left-palen-submenu-items').show();
@@ -321,4 +304,4 @@
 			if (isset($_COOKIE['FIRST_INVITE_2']) && $_COOKIE['FIRST_INVITE_2']) {
 				//echo $this->element('sample_project_modal');
 			}
-		?>		
+		?>

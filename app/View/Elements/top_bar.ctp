@@ -156,14 +156,14 @@
                         <?php } ?>
                         </ul>
                     </div>
-                   
+
                     <div class="col-lg-3 col-sm-3">
 					    <div id="proj_filtered_items" class="filter_tag_items"></div>
 				    </div>
                     <div class="<?php if($projtype !== 'active-grid') { ?> col-lg-3 col-sm-3  <?php  } else{ ?> col-lg-4 col-sm-4 <?php  } ?>">
                         <div id="tour_proj_view" class="fr pfl-icon-dv gidview-proj-menu">
-                           
-        
+
+
                         <span class="dropdown cursor">
 						    <a class="dropdown-toggle" data-toggle="dropdown"  data-target="#" rel="tooltip" title="<?php echo __('Filter');?>">
 						    <i class="glyphicon glyphicon-filter"></i>
@@ -176,7 +176,7 @@
                                         <ul class="dropdown-menu" id="dropdown_menu_project_type" style="max-height: 200px;overflow-y: scroll;margin-right:160px;"></ul>
                                         </div>
                                 </li> -->
-						
+
 						        <li class="drop_menu_mc dropdown">
                                     <a href="javascript:void(0)" class="dropdown-toggle"  data-target="#" data-toggle="dropdown" onclick="project_allfiltervalue('project_status');"><i class="material-icons">&#xE88B;</i><?php echo __('Project Status');?></a>
                                     <div class="dropdown_status" id="dropdown_menu_project_status_div">
@@ -216,7 +216,7 @@
                             </li> -->
 					    </ul>
 				    </span>
-                            
+
 							<span id="task_impExp" class="dropdown task_expPrnt case-filter-menu">
                                 <a class="dropdown-toggle dropdown_menu_exp_print_togl pdf_export" data-toggle="dropdown" href="javascript:void(0);" data-target="#" >
                                     <span class="export_file_icon"></span>
@@ -251,7 +251,7 @@
     </div>
 <?php } elseif (CONTROLLER == 'Wiki' && PAGE_NAME == 'wikidetails') { ?>
 
-	
+
 	<div class="task-list-bar  project-grid-page">
         <div class="wrap_top_tlbar">
             <div class="row">
@@ -289,24 +289,7 @@
                                 <?php echo __('Active');?> <span class="counter">(<?php echo $active_user_cnt; ?>)</span></span>
                             </a>
                         </li>
-                        <li id="tour_invt_user" <?php if ($role == 'invited') { ?>class="active-list" <?php } ?> onclick="filterUserRole('invited', '<?php echo $user_srch; ?>');">
-                            <a href="javascript:void(0)">
-                                <i class="material-icons">&#xE7FE;</i>
-                                <?php echo __('Invited');?> <span class="counter">(<?php echo $invited_user_cnt; ?>)</span>
-                            </a>
-                        </li>
-                        <li id="tour_disbl_user" <?php if ($role == 'disable') { ?>class="active-list" <?php } ?> onclick="filterUserRole('disable', '<?php echo $user_srch; ?>');">
-                            <a href="javascript:void)(0)">
-                                <i class="material-icons">&#xE909;</i>
-                                <?php echo __('Disabled');?> <span class="counter">(<?php echo $disabled_user_cnt; ?>)</span>
-                            </a>
-                        </li>
-                        <li  class="recent-icon <?php if ($role == 'recent') { ?>active-list<?php } ?>" onclick="filterUserRole('recent', '<?php echo $user_srch; ?>');">
-                            <a href="javascript:void)(0)">
-                                <i class="material-icons">&#xE8B3;</i>
-                                <?php echo __('Recent');?> <span class="counter">(<?php echo $recent_user_cnt; ?>)</span>
-                            </a>
-                        </li>
+
                         <li id="tour_clint_user" <?php if ($role == 'client') { ?>class="active-list" <?php } ?> onclick="filterUserRole('client', '<?php echo $user_srch; ?>');">
                             <a href="javascript:void)(0)">
                                 <i class="material-icons">&#xE7FB;</i>
@@ -1007,7 +990,7 @@
                                                         </label>
                                                     </div>
                                                 </li>*/ ?>
-												
+
                                             </ul>
                                         </li>
                                         <li class="drop_menu_mc">
@@ -1037,7 +1020,7 @@
                             <span onclick="<?php if ($GLOBALS['user_subscription']['subscription_id'] != CURRENT_EXPIRED_PLAN) { ?>PrintDiv()<?php } else { ?>alert('<?php echo __("This feature is only available to the paid users! Please Upgrade");?>');<?php } ?>" title="<?php echo __('Print this report');?>" class="anchor print_w_usage"><i class="material-icons">&#xE8AD;</i></span>
         <!-- <img src="<?php echo HTTP_ROOT . 'img/images/print.png'; ?>" style="cursor:pointer">-->
         <?php  } else if (PAGE_NAME == 'profitable_report') { ?>
-                        <?php } else { 
+                        <?php } else {
             if(PAGE_NAME != "timesheetReport"){ ?>
 						<div class="col-lg-3 col-sm-3 col-xs-3 padlft-non">
                                 <div class="form-group">
@@ -1208,14 +1191,14 @@ PAGE_NAME == 'groupupdatealerts' || PAGE_NAME == 'importexport' || PAGE_NAME == 
 } else if ( (CONTROLLER == 'projects' && in_array(PAGE_NAME, array('chat_settings'))) || (CONTROLLER == 'users' && PAGE_NAME == 'mycompany' ) || (CONTROLLER == 'LogTimes' && PAGE_NAME == 'resource_settings') || (CONTROLLER == 'projects' && PAGE_NAME == 'sprint_setting') || (CONTROLLER == 'projects' && PAGE_NAME == 'manageProjectTemplates') || (CONTROLLER == 'projects' && PAGE_NAME == 'project_status') || (CONTROLLER == 'projects' && PAGE_NAME == 'project_types') || (CONTROLLER == 'task_actions' && PAGE_NAME =='duedateChangeReason')) {
     ?>
     <?php echo $this->element('company_settings'); ?>
-<?php } elseif ((CONTROLLER == 'projects' || CONTROLLER == 'costs' && in_array(PAGE_NAME, array('groupupdatealerts', 'importexport', 'importtimelog','importcomment', 'task_type', 'labels', 'custom_field','csv_dataimport', 'csv_tldataimport','csv_commentimport', 'confirm_tlimport', 'confirm_import', 'task_settings', 'settings')) ) || (CONTROLLER == 'invoices' && in_array(PAGE_NAME, array('settings', 'importCustomers', 'csvDataimport', 'confirmImport')))) { ?> 
-<?php echo $this->element('project_settings'); ?>   
+<?php } elseif ((CONTROLLER == 'projects' || CONTROLLER == 'costs' && in_array(PAGE_NAME, array('groupupdatealerts', 'importexport', 'importtimelog','importcomment', 'task_type', 'labels', 'custom_field','csv_dataimport', 'csv_tldataimport','csv_commentimport', 'confirm_tlimport', 'confirm_import', 'task_settings', 'settings')) ) || (CONTROLLER == 'invoices' && in_array(PAGE_NAME, array('settings', 'importCustomers', 'csvDataimport', 'confirmImport')))) { ?>
+<?php echo $this->element('project_settings'); ?>
 <?php } else if (CONTROLLER == 'users' && (PAGE_NAME == 'profile' || PAGE_NAME == 'changepassword' || PAGE_NAME == 'email_notifications' || PAGE_NAME == 'email_reports' || PAGE_NAME == 'default_view' ) || (CONTROLLER == "UserQuicklinks" && PAGE_NAME == "index") || (CONTROLLER == "UserSidebar" && PAGE_NAME == "index") ) { ?>
     <?php echo $this->element('personal_settings'); ?>
-<?php } elseif (PAGE_NAME == "syncGoogleCalendar" || PAGE_NAME == 'slack_connect' || (CONTROLLER == "Github" && PAGE_NAME == "gitconnect") || (CONTROLLER == "github" && PAGE_NAME == "gitconnect") || (CONTROLLER == "users" && PAGE_NAME == "zapierConnect") || (CONTROLLER == "sso" && PAGE_NAME == "ssoSetting") || (CONTROLLER == "zoom" && PAGE_NAME == "zoomSetting")) { ?> 
+<?php } elseif (PAGE_NAME == "syncGoogleCalendar" || PAGE_NAME == 'slack_connect' || (CONTROLLER == "Github" && PAGE_NAME == "gitconnect") || (CONTROLLER == "github" && PAGE_NAME == "gitconnect") || (CONTROLLER == "users" && PAGE_NAME == "zapierConnect") || (CONTROLLER == "sso" && PAGE_NAME == "ssoSetting") || (CONTROLLER == "zoom" && PAGE_NAME == "zoomSetting")) { ?>
 <?php }else if(CONTROLLER == "Defects" && in_array(PAGE_NAME, array('defect_status', 'defect_severity','defect_category','defect_issue_type','defect_activity_type','defect_phase', 'defect_root_cause', 'defect_fix_version', 'defect_affect_version', 'defect_origin', 'defect_resolution'))){?>
-<?php echo $this->element('defect_setting'); ?> 
-<?php } else if(CONTROLLER == "Defects" && PAGE_NAME == "defect" ) { ?> 
+<?php echo $this->element('defect_setting'); ?>
+<?php } else if(CONTROLLER == "Defects" && PAGE_NAME == "defect" ) { ?>
     <div class="task-list-bar templates-bar">
         <div class="wrap_top_tlbar">
             <div class="row">
@@ -1228,7 +1211,7 @@ PAGE_NAME == 'groupupdatealerts' || PAGE_NAME == 'importexport' || PAGE_NAME == 
             <div class="dropdown_menu_t dropdown_menu_all_filters_ul_bkp" id="dropdown_menu_all_filters_bug">
                 <?php echo $this->element('defect_filter'); ?>
             </div>
-                                            
+
         </span>
         <span id="defect_impExp" class="dropdown task_expPrnt case-filter-menu">
             <a class="dropdown-toggle dropdown_menu_exp_print_togl pdf_export" data-toggle="dropdown" href="javascript:void(0);" data-target="#" >
@@ -1236,10 +1219,10 @@ PAGE_NAME == 'groupupdatealerts' || PAGE_NAME == 'importexport' || PAGE_NAME == 
                 <span class="export_file_icon"></span>
                     <ul>
                         <li onclick="defect_export_csv();trackEventLeadTracker('Top Bar', 'Export To CSV', '<?php echo $_SESSION['SES_EMAIL_USER_LOGIN']; ?>');"><?php echo __('Export as CSV');?></li>
-                        
+
                     </ul>
             </a>
-            
+
         </span>
     </div>
 </div>
@@ -1253,7 +1236,7 @@ PAGE_NAME == 'groupupdatealerts' || PAGE_NAME == 'importexport' || PAGE_NAME == 
         <div class="wrap_top_tlbar">
             <div class="row">
                 <div class="col-lg-12">
-                    <h2><?php 
+                    <h2><?php
                     if((CONTROLLER == 'ProjectReports' || CONTROLLER == 'project_reports') && (PAGE_NAME =='dashboard' || PAGE_NAME =='PlannedVsActualTaskView' || PAGE_NAME =='utilization') ){
                         echo __('All Reports');
                     }
@@ -1312,14 +1295,14 @@ PAGE_NAME == 'groupupdatealerts' || PAGE_NAME == 'importexport' || PAGE_NAME == 
                             <ul class="proj_stas_bar lft_tab_tasklist">
                              <li class="activitylist_breadcrumb actvty_li">
                                  <a id="actvt_btn" class="" href="<?php echo HTTP_ROOT . 'dashboard#/activities'; ?>" onclick="trackEventLeadTracker('Breadcrumb Navigation','Activities','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');return checkHashLoad('activities');">
-                                    <i class="material-icons">&#xE922;</i><?php echo __('Activities');?>                              
+                                    <i class="material-icons">&#xE922;</i><?php echo __('Activities');?>
                                  </a>
-                               
+
                             </li>
                             <li class="mentionlist_breadcrumb mntn_li">
                                <a href="<?php echo HTTP_ROOT; ?>dashboard#/mentioned_list" onclick="trackEventLeadTracker('Breadcrumb Navigation','Mentioned','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');return checkHashLoad('mentioned_list');">
                                     <i class="material-icons">&#xE8EF;</i> <?php echo __('Mentions');?>
-                                </a> 
+                                </a>
                             </li>
                             </ul>
                         </div>
@@ -1342,21 +1325,21 @@ PAGE_NAME == 'groupupdatealerts' || PAGE_NAME == 'importexport' || PAGE_NAME == 
                                 </a>
                             </li> */ ?>
 							<?php //if($_SESSION['project_methodology'] != 'scrum'){ ?>
-                             <?php /*if($this->Format->isAllowed('View Milestones',$roleAccess)){ ?> 
+                             <?php /*if($this->Format->isAllowed('View Milestones',$roleAccess)){ ?>
                              <li class="taskgroup_breadcrumb hide-in-scrum" <?php if($_SESSION['project_methodology'] == 'scrum'){ echo "style='display:none;'";}?>>
                                 <a href="javascript:void(0);" onclick="groupby('milestone', event,1);trackEventLeadTracker('Top Bar Navigation','Task Group','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');">
                                     <i class="material-icons">&#xE065;</i> <?php echo __('Task Group');?>
                                 </a>
                             </li>
                         <?php } */ ?>
-                             <?php if($this->Format->isAllowed('View Milestones',$roleAccess)){ ?> 
+                             <?php if($this->Format->isAllowed('View Milestones',$roleAccess)){ ?>
                              <li class="taskgroup_breadcrumb hide-in-scrum" <?php if($_SESSION['project_methodology'] == 'scrum'){ echo "style='display:none;'";}?>>
                                 <a href="javascript:void(0);" onclick=" ajaxCaseView('taskgroups');trackEventLeadTracker('Top Bar Navigation','Sub-task view','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');">
                                     <i class="material-icons">&#xE065;</i> <?php echo __('Subtask View');?>
                                 </a>
                             </li>
                         <?php } ?>
-                            <?php if($this->Format->isAllowed('View Kanban',$roleAccess)){ ?> 
+                            <?php if($this->Format->isAllowed('View Kanban',$roleAccess)){ ?>
                                 <?php
                                 $kanbanurl = DEFAULT_KANBANVIEW == 'kanban' ? 'kanban' : 'milestonelist';
                                 $ldTrkUrl = DEFAULT_KANBANVIEW == 'kanban' ? 'Kanban Task Status Page' : 'Kanban Task Group';
@@ -1368,7 +1351,7 @@ PAGE_NAME == 'groupupdatealerts' || PAGE_NAME == 'importexport' || PAGE_NAME == 
                             </li>
 							<?php } ?>
 							<?php //} ?>
-                             <?php if($this->Format->isAllowed('View Calendar',$roleAccess)){ ?> 
+                             <?php if($this->Format->isAllowed('View Calendar',$roleAccess)){ ?>
                              <li class="calendar_breadcrumb" id="tour_calendar_view">
                                 <a  href="<?php echo HTTP_ROOT; ?>dashboard#/calendar" onclick="trackEventLeadTracker('Breadcrumb Navigation','Calendar','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');return calendarView('calendar');">
                                     <i  class="material-icons">&#xE916;</i> <?php echo __('Calendar');?>
@@ -1466,7 +1449,7 @@ PAGE_NAME == 'groupupdatealerts' || PAGE_NAME == 'importexport' || PAGE_NAME == 
 									<?php /*<a class="closetask_overview_ttlp" href='javascript:void(0);'><i class="material-icons">&#xE88E;</i>
 									<span class="tool_tip_cont"><?php echo __('Total closed tasks compared to total tasks in a given project');?>.</span>
 									</a> */ ?>
-								</div>	
+								</div>
 							</div>
 							<div class="d_tbl_cel p_name col-sm-9">
                                 <div class="proj_name_over_task">
@@ -1477,7 +1460,7 @@ PAGE_NAME == 'groupupdatealerts' || PAGE_NAME == 'importexport' || PAGE_NAME == 
 								<span id ="dsbleInactOver" onclick="inlineUserEdit();" class="inline-edit-usr fl anchor" data-prj-id="" data-prj-name="" title="<?php echo __('Edit Project');?>" rel="tooltip"><i class="material-icons">&#xE254;</i></span>
 									<?php } ?>
 								</div>
-								<div class="edit_status_prior">									
+								<div class="edit_status_prior">
 									<span id="project_stst_span" class="" title="<?php echo __('Project Status');?>" rel="tooltip"></span>
 									<span class="prio_low prio_lmh prio_gen_prj prio-drop-icon proj_ov_priority" rel="tooltip" title="<?php echo __('Low Priority');?>"></span>
 								</div>
@@ -1498,7 +1481,7 @@ PAGE_NAME == 'groupupdatealerts' || PAGE_NAME == 'importexport' || PAGE_NAME == 
                             <!--                        <h2>Timesheet</h2>-->
                             <ul id="select_view_timesheet" class="proj_stas_bar ">
                             <li title="<?php echo __('List View');?>"><a id="lview_btn_timelog" onclick="return trackEventLeadTracker('Top Bar','List Timelog','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');" href="<?php echo HTTP_ROOT.'dashboard#/timelog';?>"><i class="material-icons">&#xE8EF;</i>&nbsp;<?php echo __('List View');?></a></li>
-                                
+
                             </ul>
                             <div class="cb"></div>
                         </div>
@@ -2131,11 +2114,11 @@ PAGE_NAME == 'groupupdatealerts' || PAGE_NAME == 'importexport' || PAGE_NAME == 
         $(".okey").click(function () {
             $(".manage_plan_setting").hide();
         });
-				
+
 				$('#proj_prog_cnt').tipsy({
 						gravity: 'w',
 						fade: true
 				});
-				
+
     });
 </script>

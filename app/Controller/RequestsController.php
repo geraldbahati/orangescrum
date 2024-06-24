@@ -14,7 +14,7 @@ class RequestsController extends AppController
         $this->Auth->allow('pdfcase_project', 'taskgroup_pdfcase_project');
         parent::beforeFilter();
     }
-        
+
 
     public function index()
     {
@@ -121,7 +121,7 @@ class RequestsController extends AppController
         } elseif ($caseMenuFilters == "overdue") {
             $cur_dt = date('Y-m-d H:i:s', strtotime(GMT_DATETIME));
             $cur_dt = date('Y-m-d', strtotime(GMT_DATETIME));
-            $qry.= " AND Easycase.due_date !='' AND Easycase.due_date != '0000-00-00 00:00:00' AND Easycase.due_date !='1970-01-01 00:00:00' AND DATE(Easycase.due_date) < '" . $cur_dt . "' AND (Easycase.legend !=3) ";
+            $qry.= " AND DAYNAME(Easycase.due_date) IS NOT NULL AND Easycase.due_date !='1970-01-01 00:00:00' AND DATE(Easycase.due_date) < '" . $cur_dt . "' AND (Easycase.legend !=3) ";
         } elseif ($caseMenuFilters == "highpriority") {
             $qry.= " AND Easycase.priority ='0' ";
         } elseif ($caseMenuFilters == "openedtasks") {
@@ -187,7 +187,7 @@ class RequestsController extends AppController
             $filterenabled = 1;
             $qry.= $this->Format->customStatusFilter($caseCustomStatus, $projUniq, $caseStatus);
             }*/
-            
+
             ######### Filter by Member ##########
             if ($caseUserId && $caseUserId != "all") {
                 $qry.= $this->Format->memberFilter($caseUserId);
@@ -240,12 +240,12 @@ class RequestsController extends AppController
                     } elseif (trim($case_date) == '24') {
                         $day_date = date("Y-m-d H:i:s", strtotime($GMT_DATE. " -1 day"));
                         $qry.= " AND CONVERT_TZ(Easycase.dt_created,'".$frmTz."','".$toTz."') >='" . $day_date . "'";
-                    } 
+                    }
                      elseif (trim($case_date) == 'today') {
                         $from_d = date("Y-m-d 00:00:00", strtotime($GMT_DATE));
                     $to_d = date("Y-m-d 23:59:59", strtotime($GMT_DATE));
                     $qry.= " AND DATE(CONVERT_TZ(Easycase.dt_created,'".$frmTz."','".$toTz."')) >= '" . date('Y-m-d H:i:s', strtotime($from_d)) . "' AND DATE(CONVERT_TZ(Easycase.dt_created,'".$frmTz."','".$toTz."')) <= '" . date('Y-m-d H:i:s', strtotime($to_d)) . "'";
-                  
+
                     }
                     elseif (trim($case_date) == 'week') {
                         $week_date = date("Y-m-d H:i:s", strtotime($GMT_DATE . " -1 week"));
@@ -282,7 +282,7 @@ class RequestsController extends AppController
                     $qry.= " AND (DATE(CONVERT_TZ(Easycase.due_date,'".$frmTz."','".$toTz."')) ='" . $GMT_DATE . "')";
                 } elseif (trim($case_duedate) == 'overdue') {
                     $week_date = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s"))) . " +1 week"));
-                    $qry .= " AND ( DATE(CONVERT_TZ(Easycase.due_date,'".$frmTz."','".$toTz."')) <'" . $GMT_DATE . "') AND (DATE(CONVERT_TZ(Easycase.due_date,'".$frmTz."','".$toTz."')) !='0000-00-00') AND (Easycase.legend !=3)";
+                    $qry .= " AND ( DATE(CONVERT_TZ(Easycase.due_date,'".$frmTz."','".$toTz."')) <'" . $GMT_DATE . "') AND (DAYNAME(CONVERT_TZ(Easycase.due_date,'".$frmTz."','".$toTz."'))  IS NOT NULL) AND (Easycase.legend !=3)";
                 } elseif (strstr(trim($case_duedate), ":")) {
                     //echo $case_duedate;exit;
                     $ar_dt = explode(":", trim($case_duedate));
@@ -328,7 +328,7 @@ class RequestsController extends AppController
             if ($caseComment && $caseComment != "all") {
                 $qry.= $this->Format->commentFilter($caseComment, $proj_id, $case_date);
             }
-			######### Filter by task group ##########           
+			######### Filter by task group ##########
 			if ($caseTaskgroup && $caseTaskgroup != "all") {
 					$qry.= $this->Format->caseTaskGroupFilter($caseTaskgroup,$proj_id);
 			}
@@ -338,43 +338,42 @@ class RequestsController extends AppController
             $cur_dt = date('Y-m-d H:i:s', strtotime(GMT_DATETIME));
             if (!empty($qry) || !empty($this->params['data']['filters'])) {
                 $ret_arr['assignTo'] = $this->Easycase->find('count', array('conditions' => array('Easycase.project_id'=>$proj_id,'Easycase.istype'=>1,'Easycase.isactive'=>1,'Easycase.assign_to' => SES_ID, $clt_sql,' 1 '.$qry,' 1 '.$searchcase)));
-                
+
                 $ret_arr['deligateTo'] = $this->Easycase->find('count', array('conditions' => array('Easycase.project_id'=>$proj_id,'Easycase.istype'=>1,'Easycase.isactive'=>1,'Easycase.user_id' => SES_ID,'Easycase.assign_to NOT IN ' => array(SES_ID,0), $clt_sql,' 1 '.$qry,' 1 '.$searchcase)));
-                
+
                 $ret_arr['highPriority'] = $this->Easycase->find('count', array('conditions' => array('Easycase.project_id'=>$proj_id,'Easycase.istype'=>1,'Easycase.isactive'=>1,'Easycase.priority' => 0, $clt_sql,' 1 '.$qry,' 1 '.$searchcase)));
-                
+
                 $ret_arr['opeded'] = $this->Easycase->find('count', array('conditions' => array('Easycase.project_id'=>$proj_id,'Easycase.istype'=>1,'Easycase.isactive'=>1,'Easycase.legend' => array(1,2,4),'Easycase.type_id !=' => 10, $clt_sql,' 1 '.$qry,' 1 '.$searchcase)));
-                
+
                 $ret_arr['closed'] = $this->Easycase->find('count', array('conditions' => array('Easycase.project_id'=>$proj_id,'Easycase.istype'=>1,'Easycase.isactive'=>1,'Easycase.legend' => array(3,5),'Easycase.type_id !=' => 10, $clt_sql,' 1 '.$qry,' 1 '.$searchcase)));
-                
+
                 $ret_arr['newTask'] = $this->Easycase->find('count', array('conditions' => array('Easycase.project_id'=>$proj_id,'Easycase.istype'=>1,'Easycase.isactive'=>1, $clt_sql,' 1 '.$qry,' 1 '.$searchcase)));
-                
+
                 $sql = 'SELECT COUNT(DISTINCT Easycase.id) as ovrduecount '
                         . 'FROM easycases Easycase '
-                        . 'WHERE Easycase.isactive=1 AND ' . $clt_sql . ' AND Easycase.due_date !="" '
-                        . 'AND Easycase.due_date !="0000-00-00 00:00:00" AND Easycase.due_date !="1970-01-01 00:00:00" AND Easycase.due_date < "' . $cur_dt . '" '
+                        . 'WHERE Easycase.isactive=1 AND ' . $clt_sql . ' AND DAYNAME(Easycase.due_date) IS NOT NULL AND Easycase.due_date !="1970-01-01 00:00:00" AND Easycase.due_date < "' . $cur_dt . '" '
                         . 'AND (Easycase.legend !=3) AND Easycase.istype= 1 '
                         . ' AND Easycase.project_id =' . $proj_id . ' ' . $qry . $searchcase;
                 $overdue_count = $this->Easycase->query($sql);
                 $ret_arr['overdue'] = $overdue_count[0][0]['ovrduecount'];
             }
             $ret_arr_org['assignTo'] = $this->Easycase->find('count', array('conditions' => array('Easycase.project_id'=>$proj_id,'Easycase.istype'=>1,'Easycase.isactive'=>1,'Easycase.assign_to' => SES_ID, $clt_sql,' 1 '.$searchcase.$restrictedQuery)));
-            
+
             $ret_arr_org['deligateTo'] = $this->Easycase->find('count', array('conditions' => array('Easycase.project_id'=>$proj_id,'Easycase.istype'=>1,'Easycase.isactive'=>1,'Easycase.user_id' => SES_ID,'Easycase.assign_to NOT IN ' => array(SES_ID,0), $clt_sql,' 1 '.$searchcase.$restrictedQuery)));
-            
+
             $ret_arr_org['highPriority'] = $this->Easycase->find('count', array('conditions' => array('Easycase.project_id'=>$proj_id,'Easycase.istype'=>1,'Easycase.isactive'=>1,'Easycase.priority' => 0, $clt_sql,' 1 '.$searchcase.$restrictedQuery)));
-            
+
             $ret_arr_org['opeded'] = $this->Easycase->find('count', array('conditions' => array('Easycase.project_id'=>$proj_id,'Easycase.istype'=>1,'Easycase.isactive'=>1,'Easycase.legend' => array(1,2,4),'Easycase.type_id !=' => 10, $clt_sql,' 1 '.$searchcase.$restrictedQuery)));
-            
+
             $ret_arr_org['closed'] = $this->Easycase->find('count', array('conditions' => array('Easycase.project_id'=>$proj_id,'Easycase.istype'=>1,'Easycase.isactive'=>1,'Easycase.legend' => array(3,5),'Easycase.type_id !=' => 10, $clt_sql,' 1 '.$searchcase.$restrictedQuery)));
-            
+
             $ret_arr_org['newTask'] = $this->Easycase->find('count', array('conditions' => array('Easycase.project_id'=>$proj_id,'Easycase.istype'=>1,'Easycase.isactive'=>1, $clt_sql,' 1 '.$searchcase.$restrictedQuery)));
-            
+
             $cur_dts = date('Y-m-d', strtotime(GMT_DATETIME));
             $sqlOrg = 'SELECT COUNT(DISTINCT Easycase.id) as ovrduecount '
                     . 'FROM easycases Easycase '
-                    . 'WHERE Easycase.isactive=1 AND ' . $clt_sql . ' AND Easycase.due_date !="" '
-                    . 'AND Easycase.due_date !="0000-00-00 00:00:00"  AND Easycase.due_date !="1970-01-01 00:00:00" AND Easycase.due_date < "' . $cur_dts  . '" '
+                . 'WHERE Easycase.isactive=1 AND ' . $clt_sql . ' AND DAYNAME(Easycase.due_date) IS NOT NULL '
+                . 'AND Easycase.due_date !="1970-01-01 00:00:00" AND Easycase.due_date < "' . $cur_dts  . '" '
                     . 'AND Easycase.legend !=3 AND Easycase.legend !=5 AND Easycase.istype= 1 '
                     . ' AND Easycase.project_id =' . $proj_id . ' ' . $searchcase.$restrictedQuery;
             $overdue_count_o = $this->Easycase->query($sqlOrg);
@@ -416,13 +415,13 @@ class RequestsController extends AppController
             $resCaseMenu['caseFiles'] = (isset($caseFiles)) ? $caseFiles : 0;
             $resCaseMenu['caseFilesOrg'] = (isset($caseFilesOrg)) ? $caseFilesOrg : 0;
         } elseif ($prjUniqIdCsMenu == 'all') {
-            
+
             ######### Filter by Case Label ##########
             if (trim($caseLabel) && $caseLabel != "all") {
                 $qry.= $this->Format->labelFilter($caseLabel, 0, SES_COMP, SES_TYPE, SES_ID);
                 //$filterenabled = 1;
             }
-            
+
             $cond = array('conditions' => array('ProjectUser.user_id' => SES_ID, 'Project.isactive' => 1, 'Project.company_id' => SES_COMP), 'fields' => array('DISTINCT Project.id'), 'order' => array('ProjectUser.dt_visited DESC'));
 
             $this->loadModel('ProjectUser');
@@ -607,7 +606,7 @@ class RequestsController extends AppController
     }
     public function ajaXTaskMassAction(){
 			if ($this->request->is('ajax')) {
-				$projUniq = $this->data['projFil']; // Project Uniq I				
+				$projUniq = $this->data['projFil']; // Project Uniq I
 				$case_ids = $this->data['caseid']; // Case Uniq ID to close a case
 				$actionType = $this->data['statusid'];
 				if(empty($this->data['caseid']) || empty($this->data['projFil'])){
@@ -658,7 +657,7 @@ class RequestsController extends AppController
 
 				if ($commonAllId) {
 					$commonArrId = $commonAllId;
-					$done = 1;				
+					$done = 1;
 					$commonArrId_t = array_filter($commonArrId);
 					foreach ($commonArrId as $commonCaseId) {
 						if (!empty($commonCaseId)) {
@@ -725,7 +724,7 @@ class RequestsController extends AppController
 									$this->ProjectUser->recursive = -1;
 									$getUser = $this->ProjectUser->query("SELECT user_id FROM project_users WHERE project_id='" . $closeStsPid . "'");
 									$prjuniq = $this->Project->query("SELECT uniq_id, short_name FROM projects WHERE id='" . $closeStsPid . "'");
-									$prjuniqid = $prjuniq[0]['projects']['uniq_id']; 
+									$prjuniqid = $prjuniq[0]['projects']['uniq_id'];
 									$projShName = strtoupper($prjuniq[0]['projects']['short_name']);
 									$channel_name = $prjuniqid;
 
@@ -741,7 +740,7 @@ class RequestsController extends AppController
 						}
 					}
 					$_SESSION['email']['email_body'] = $emailbody;
-					$_SESSION['email']['msg'] = $msg;					
+					$_SESSION['email']['msg'] = $msg;
 					$email_notification = array('allfiles' => '', 'caseNo' => $caseStsNo, 'closeStsTitle' => $closeStsTitle, 'emailMsg' => '', 'closeStsPri' => $closeStsPri, 'closeStsTyp' => $closeStsTyp, 'assignTo' => '', 'usr_names' => $usr_names, 'caseuniqid' => $caseuniqid, 'csType' => $emailType, 'closeStsPid' => $closeStsPid, 'caseStsId' => $caseStsId, 'caseIstype' => 5, 'caseid_list' => $caseid_list, 'caseUniqId' => $closeStsUniqId);
 
 					$resCaseProj['status'] = 'success';
@@ -749,7 +748,7 @@ class RequestsController extends AppController
 					echo json_encode($resCaseProj);
 					exit;
 				}
-				
+
 				$resCaseProj['status'] = 'failed';
 				$resCaseProj['email_arr'] = '';
 				echo json_encode($resCaseProj);
@@ -1013,7 +1012,7 @@ class RequestsController extends AppController
                 $orderby .= "Easycase.legend ASC";
             }else if($status_group >0){
                 $orderby .= "Easycase.custom_status_id ASC";
-            } 
+            }
         }elseif($ajax_group_by == 'Date'){
             if($sortby == 'updated'){
                 $orderby .= "Easycase.dt_created " . $sortorder;
@@ -1022,7 +1021,7 @@ class RequestsController extends AppController
             }
         }elseif($ajax_group_by == 'Priority'){
             if($sortby == 'priority'){
-                $orderby .= "Easycase.priority " . $sortorder; 
+                $orderby .= "Easycase.priority " . $sortorder;
             }else{
                 $orderby .= "Easycase.priority ASC";
             }
@@ -1178,7 +1177,7 @@ class RequestsController extends AppController
             $frmTz = '+00:00';
             $toTz = $this->Tmzone->getGmtTz(TZ_GMT, TZ_DST);
             $GMT_DATE =$this->Tmzone->GetDateTime(SES_TIMEZONE, TZ_GMT, TZ_DST, TZ_CODE, GMT_DATETIME, "datetime");
-            
+
             if (trim($case_date) == 'one') {
                 $one_date = date('Y-m-d H:i:s', strtotime($GMT_DATE) - 3600);
                 $qry.= " AND CONVERT_TZ(Easycase.dt_created,'".$frmTz."','".$toTz."') >='" . $one_date . "'";
@@ -1192,7 +1191,7 @@ class RequestsController extends AppController
                 $from_d = date("Y-m-d 00:00:00", strtotime($GMT_DATE));
                 $to_d = date("Y-m-d 23:59:59", strtotime($GMT_DATE));
                 $qry.= " AND DATE(CONVERT_TZ(Easycase.dt_created,'".$frmTz."','".$toTz."')) >= '" . date('Y-m-d H:i:s', strtotime($from_d)) . "' AND DATE(CONVERT_TZ(Easycase.dt_created,'".$frmTz."','".$toTz."')) <= '" . date('Y-m-d H:i:s', strtotime($to_d)) . "'";
-              
+
             }elseif (trim($case_date) == 'week') {
                 $filterenabled = 1;
                 $week_date = date("Y-m-d H:i:s", strtotime($GMT_DATE . " -1 week"));
@@ -1215,7 +1214,7 @@ class RequestsController extends AppController
                 $qry.= " AND DATE(CONVERT_TZ(Easycase.dt_created,'".$frmTz."','".$toTz."')) >= '" . date('Y-m-d', strtotime($frm_dt)) . "' AND DATE(CONVERT_TZ(Easycase.dt_created,'".$frmTz."','".$toTz."')) <= '" . date('Y-m-d', strtotime($to_dt)) . "'";
             }
         }
-        
+
 
         if (trim($case_duedate) != "") {
             $case_duedate = urldecode($case_duedate);
@@ -1276,7 +1275,7 @@ class RequestsController extends AppController
         } elseif ($caseMenuFilters == "overdue") {
             $cur_dt = date('Y-m-d H:i:s', strtotime(GMT_DATETIME));
             $cur_dt = date('Y-m-d', strtotime(GMT_DATETIME));
-            $qry.= " AND Easycase.due_date !='' AND Easycase.due_date != '0000-00-00 00:00:00' AND Easycase.due_date !='1970-01-01 00:00:00' AND DATE(Easycase.due_date) < '" . $cur_dt . "' AND (Easycase.legend !=3) AND (Easycase.legend !=5) ";
+            $qry.= " AND DAYNAME(Easycase.due_date) IS NOT NULL AND Easycase.due_date !='1970-01-01 00:00:00' AND DATE(Easycase.due_date) < '" . $cur_dt . "' AND (Easycase.legend !=3) AND (Easycase.legend !=5) ";
         } elseif ($caseMenuFilters == "highpriority") {
             $qry.= " AND Easycase.priority ='0' ";
         } elseif ($caseMenuFilters == "openedtasks") {
@@ -1597,16 +1596,16 @@ class RequestsController extends AppController
                     }else{
                         $over_due_task_count = $this->Easycase->query("SELECT COUNT(*) as cnt from easycases as Easycase WHERE istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND  Easycase.project_id<>0 AND (DATE(CONVERT_TZ(Easycase.due_date,'".$frmTz."','".$toTz."')) <'" . $GMT_DATE . "') AND (DATE(CONVERT_TZ(Easycase.due_date,'".$frmTz."','".$toTz."')) !='0000-00-00') AND (Easycase.legend !=3) AND (Easycase.user_id = ".SES_ID." OR Easycase.assign_to = ".SES_ID.")");
                     }
-                    
+
                     $over_due_task_count = $over_due_task_count[0][0]['cnt'];
                     if ($caseMenuFilters == "latest") {
                         // Target_4
-                        
+
                         /* EXISTING METHOD
                         $caseAll = $this->Easycase->query("SELECT SQL_CALC_FOUND_ROWS Easycase.*,User.short_name,IF((Easycase.assign_to =" . SES_ID . "),'Me',User.short_name) AS Assigned ,(SELECT parent_task_id from easycases where id=Easycase.parent_task_id AND Easycase.project_id!=0 AND Easycase.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1' AND ProjectUser.company_id='" . SES_COMP . "')) AS is_sub_sub_task,(SELECT count(parent_task_id) from easycases as E1 where E1.parent_task_id IN (SELECT id from easycases as E2 where E2.parent_task_id = Easycase.id AND Easycase.project_id!=0 AND Easycase.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1' AND ProjectUser.company_id='" . SES_COMP . "')) AND E1.project_id!=0 AND E1.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1' AND ProjectUser.company_id='" . SES_COMP . "')) AS sub_sub_task FROM ( SELECT Easycase.id,Easycase.uniq_id,Easycase.case_no,Easycase.case_count,Easycase.project_id,Easycase.user_id,Easycase.updated_by,Easycase.type_id,Easycase.priority,Easycase.title,Easycase.estimated_hours,Easycase.hours,Easycase.completed_task,Easycase.assign_to,Easycase.gantt_start_date,Easycase.due_date,Easycase.istype,Easycase.client_status,Easycase.format,Easycase.status,Easycase.legend,Easycase.is_recurring,Easycase.isactive,Easycase.dt_created,Easycase.actual_dt_created,Easycase.reply_type,Easycase.is_chrome_extension,Easycase.from_email,Easycase.depends,Easycase.children,Easycase.temp_est_hours,Easycase.seq_id,Easycase.parent_task_id,Easycase.story_point,Easycase.thread_count,Easycase.custom_status_id FROM easycases as Easycase WHERE Easycase.istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND Easycase.project_id!=0 AND Easycase.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1' AND ProjectUser.company_id='" . SES_COMP . "') " . $searchcase . " " . trim($qry) . "  ORDER BY  Easycase.dt_created DESC) AS Easycase LEFT JOIN users User ON Easycase.assign_to=User.id ORDER BY " . $orderby . " LIMIT $limit1,$limit2");
 
                         */
-                      
+
                         /* Modified on 21.12.2020 by Tapan Sir */
                         $caseAll = $this->Easycase->query("SELECT SQL_CALC_FOUND_ROWS Easycase.*,User.short_name,IF((Easycase.assign_to =" . SES_ID . "),'Me',User.short_name) AS Assigned ,(SELECT parent_task_id from easycases where
 						easycases.id=Easycase.parent_task_id AND Easycase.project_id!=0 AND easycases.project_id =Easycase.project_id ) AS is_sub_sub_task,(SELECT count(parent_task_id) from
@@ -1624,20 +1623,20 @@ class RequestsController extends AppController
                        $req_sql = "SELECT SQL_CALC_FOUND_ROWS Easycase.*,User.short_name,IF((Easycase.assign_to =" . SES_ID . "),'Me',User.short_name) AS Assigned ,(SELECT parent_task_id from easycases where id=Easycase.parent_task_id AND Easycase.project_id!=0 AND Easycase.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1' AND ProjectUser.company_id='" . SES_COMP . "')) AS is_sub_sub_task,(SELECT count(parent_task_id) from easycases as E1 where E1.parent_task_id IN (SELECT id from easycases as E2 where E2.parent_task_id = Easycase.id AND Easycase.project_id!=0 AND Easycase.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1' AND ProjectUser.company_id='" . SES_COMP . "')) AND E1.project_id!=0 AND E1.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1' AND ProjectUser.company_id='" . SES_COMP . "')) AS sub_sub_task FROM ( SELECT Easycase.id,Easycase.uniq_id,Easycase.case_no,Easycase.case_count,Easycase.project_id,Easycase.user_id,Easycase.updated_by,Easycase.type_id,Easycase.priority,Easycase.title,Easycase.estimated_hours,Easycase.hours,Easycase.completed_task,Easycase.assign_to,Easycase.gantt_start_date,Easycase.due_date,Easycase.istype,Easycase.client_status,Easycase.format,Easycase.status,Easycase.legend,Easycase.is_recurring,Easycase.isactive,Easycase.dt_created,Easycase.actual_dt_created,Easycase.reply_type,Easycase.is_chrome_extension,Easycase.from_email,Easycase.depends,Easycase.children,Easycase.temp_est_hours,Easycase.seq_id,Easycase.parent_task_id,Easycase.story_point,Easycase.thread_count,Easycase.custom_status_id  FROM easycases as Easycase WHERE Easycase.istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND Easycase.project_id!=0 AND Easycase.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1' AND ProjectUser.company_id='" . SES_COMP . "') " . $searchcase . " " . trim($qry) . "  ORDER BY  Easycase.project_id DESC) AS Easycase LEFT JOIN users User ON Easycase.assign_to=User.id ORDER BY " . $orderby . " LIMIT $limit1,$limit2";
 
                         */
-                        
+
                         /* Query optimized by Tapan Sir on 16.12.2020 */
-                        
+
 						 $req_sql = "SELECT SQL_CALC_FOUND_ROWS Easycase.*,User.short_name,IF((Easycase.assign_to =" . SES_ID . "),'Me',User.short_name) AS Assigned ,(SELECT parent_task_id from easycases where easycases.project_id =Easycase.project_id AND id=Easycase.parent_task_id AND Easycase.project_id!=0 ) AS is_sub_sub_task,(SELECT count(parent_task_id) from easycases as E1 where E1.parent_task_id IN (SELECT id from easycases as E2 where E2.project_id =Easycase.project_id AND E2.parent_task_id = Easycase.id AND Easycase.project_id!=0 ) AND E1.project_id!=0 AND E1.project_id =Easycase.project_id) AS sub_sub_task,ifnull(lt.tot_spent_hour,0) tot_spent_hour FROM (SELECT Easycase.id,Easycase.uniq_id,Easycase.case_no,Easycase.case_count,Easycase.project_id,Easycase.user_id,Easycase.updated_by,Easycase.type_id,Easycase.priority,Easycase.title,Easycase.estimated_hours,Easycase.hours,Easycase.completed_task,Easycase.assign_to,Easycase.gantt_start_date,Easycase.initial_due_date,Easycase.due_date,Easycase.istype,Easycase.client_status,Easycase.format,Easycase.status,Easycase.legend,Easycase.is_recurring,Easycase.isactive,Easycase.dt_created,Easycase.actual_dt_created,Easycase.reply_type,Easycase.is_chrome_extension,Easycase.from_email,Easycase.depends,Easycase.children,Easycase.temp_est_hours,Easycase.seq_id,Easycase.parent_task_id,Easycase.story_point,Easycase.thread_count,Easycase.custom_status_id  FROM easycases as Easycase LEFT JOIN easycase_milestones EasycaseMilestone on Easycase.id = EasycaseMilestone.easycase_id WHERE Easycase.istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND Easycase.project_id!=0 AND Easycase.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1' AND ProjectUser.company_id='" . SES_COMP . "') " . $searchcase . " " . trim($qry) . "  ORDER BY  Easycase.project_id DESC) AS Easycase LEFT JOIN users User ON Easycase.assign_to=User.id LEFT JOIN (select sum(t.total_hours) as tot_spent_hour, t.task_id from log_times t, project_users p where t.project_id=p.project_id and p.company_id='" . SES_COMP . "' and t.user_id =p.user_id group by t.task_id ) as lt ON Easycase.id = lt.task_id ORDER BY " . $orderby . " LIMIT $limit1,$limit2";
 						//echo $req_sql;exit;
-                        
+
                         if ($gby == 'milestone') {
                             /* Code commented by Tapan Sir 04.01.2021
 
                             $req_sql = "SELECT SQL_CALC_FOUND_ROWS Easycase.*,EasycaseMilestone.milestone_id as mid,User.short_name,IF((Easycase.assign_to =" . SES_ID . "),'Me',User.short_name) AS Assigned ,(SELECT parent_task_id from easycases where id=Easycase.parent_task_id AND Easycase.project_id!=0 AND Easycase.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1' AND ProjectUser.company_id='" . SES_COMP . "')) AS is_sub_sub_task,(SELECT count(parent_task_id) from easycases as E1 where E1.parent_task_id IN (SELECT id from easycases as E2 where E2.parent_task_id = Easycase.id AND Easycase.project_id!=0 AND Easycase.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1' AND ProjectUser.company_id='" . SES_COMP . "')) AND E1.project_id!=0 AND E1.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1' AND ProjectUser.company_id='" . SES_COMP . "')) AS sub_sub_task FROM ( SELECT Easycase.id,Easycase.uniq_id,Easycase.case_no,Easycase.case_count,Easycase.project_id,Easycase.user_id,Easycase.updated_by,Easycase.type_id,Easycase.priority,Easycase.title,Easycase.estimated_hours,Easycase.hours,Easycase.completed_task,Easycase.assign_to,Easycase.gantt_start_date,Easycase.due_date,Easycase.istype,Easycase.client_status,Easycase.format,Easycase.status,Easycase.legend,Easycase.is_recurring,Easycase.isactive,Easycase.dt_created,Easycase.actual_dt_created,Easycase.reply_type,Easycase.is_chrome_extension,Easycase.from_email,Easycase.depends,Easycase.children,Easycase.temp_est_hours,Easycase.seq_id,Easycase.parent_task_id,Easycase.story_point,Easycase.thread_count,Easycase.custom_status_id  FROM easycases as Easycase WHERE Easycase.istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND Easycase.project_id!=0 AND Easycase.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1' AND ProjectUser.company_id='" . SES_COMP . "') " . $searchcase . " " . trim($qry) . "  ORDER BY  Easycase.project_id DESC) AS Easycase LEFT JOIN users User ON Easycase.assign_to=User.id " . $case_join . " JOIN easycase_milestones EasycaseMilestone ON Easycase.id=EasycaseMilestone.easycase_id" . $milstone_filter_condition . " ORDER BY " . $orderby . $mileSton_orderby . "   LIMIT $limit1,$limit2";  */
-                            
-                            
+
+
                             $req_sql = "SELECT SQL_CALC_FOUND_ROWS Easycase.*,EasycaseMilestone.milestone_id as mid,User.short_name,IF((Easycase.assign_to =" . SES_ID . "),'Me',User.short_name) AS Assigned ,(SELECT parent_task_id from easycases where id=Easycase.parent_task_id AND Easycase.project_id!=0 AND easycases.project_id=Easycase.project_id) AS is_sub_sub_task,(
-						SELECT 
+						SELECT
 							count(parent_task_id) from easycases as E1 where E1.parent_task_id IN (SELECT id from easycases as E2 where E2.parent_task_id = Easycase.id AND Easycase.project_id!=0 AND E2.project_id=Easycase.project_id) AND E1.project_id!=0 AND E1.project_id = Easycase.project_id
 						) AS sub_sub_task FROM ( SELECT Easycase.id,Easycase.uniq_id,Easycase.case_no,Easycase.case_count,Easycase.project_id,Easycase.user_id,Easycase.updated_by,Easycase.type_id,Easycase.priority,Easycase.title,Easycase.estimated_hours,Easycase.hours,Easycase.completed_task,Easycase.assign_to,Easycase.gantt_start_date,Easycase.initial_due_date,Easycase.due_date,Easycase.istype,Easycase.client_status,Easycase.format,Easycase.status,Easycase.legend,Easycase.is_recurring,Easycase.isactive,Easycase.dt_created,Easycase.actual_dt_created,Easycase.reply_type,Easycase.is_chrome_extension,Easycase.from_email,Easycase.depends,Easycase.children,Easycase.temp_est_hours,Easycase.seq_id,Easycase.parent_task_id,Easycase.story_point,Easycase.thread_count,Easycase.custom_status_id  FROM easycases as Easycase WHERE Easycase.istype=1 AND " . $clt_sql . " " . $cond_easycase_actuve . " AND Easycase.project_id!=0 AND Easycase.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive=1 AND ProjectUser.company_id=" . SES_COMP . ") " . $searchcase . " " . trim($qry) . "  ORDER BY  Easycase.project_id DESC) AS Easycase LEFT JOIN users User ON Easycase.assign_to=User.id " . $case_join . " JOIN easycase_milestones EasycaseMilestone ON Easycase.id=EasycaseMilestone.easycase_id" . $milstone_filter_condition . " ORDER BY " . $orderby . $mileSton_orderby . "   LIMIT $limit1,$limit2";
                         }
@@ -1671,10 +1670,10 @@ class RequestsController extends AppController
                     $req_sql = "SELECT SQL_CALC_FOUND_ROWS Easycase.*,User.short_name,IF((Easycase.assign_to =" . SES_ID . "),'Me',User.short_name) AS Assigned ,(SELECT parent_task_id from easycases where id=Easycase.parent_task_id AND Easycase.project_id='$curProjId' AND Easycase.project_id!=0) AS is_sub_sub_task,(SELECT count(parent_task_id) from easycases as E1 where E1.parent_task_id IN (SELECT id from easycases as E2 where E2.parent_task_id = Easycase.id AND Easycase.project_id='$curProjId' AND Easycase.project_id!=0) AND E1.project_id!=0 AND E1.project_id='$curProjId') AS sub_sub_task FROM ( SELECT Easycase.id,Easycase.uniq_id,Easycase.case_no,Easycase.case_count,Easycase.project_id,Easycase.user_id,Easycase.updated_by,Easycase.type_id,Easycase.priority,Easycase.title,Easycase.estimated_hours,Easycase.hours,Easycase.completed_task,Easycase.assign_to,Easycase.gantt_start_date,Easycase.due_date,Easycase.istype,Easycase.client_status,Easycase.format,Easycase.status,Easycase.legend,Easycase.is_recurring,Easycase.isactive,Easycase.dt_created,Easycase.actual_dt_created,Easycase.reply_type,Easycase.is_chrome_extension,Easycase.from_email,Easycase.depends,Easycase.children,Easycase.temp_est_hours,Easycase.seq_id,Easycase.parent_task_id,Easycase.story_point,Easycase.thread_count,Easycase.custom_status_id FROM easycases as Easycase WHERE istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND Easycase.project_id='$curProjId' AND Easycase.project_id<>0  " . $searchcase . " " . trim($qry) . " ) AS Easycase LEFT JOIN users User ON Easycase.assign_to=User.id ORDER BY " . $orderby . " LIMIT $limit1,$limit2";
 
                     */
-                    
-                    
+
+
                     // Query optimized by Tapan sir(17.12.2020)
-                    
+
 					$req_sql = "
                     SELECT
                         SQL_CALC_FOUND_ROWS
@@ -1720,8 +1719,8 @@ class RequestsController extends AppController
                         Easycase.is_sub_sub_task,
                         IFNULL(Easycase.sub_sub_task,0) sub_sub_task,
                         Easycase.tot_spent_hour
-                     FROM 
-                     ( 
+                     FROM
+                     (
                          SELECT Easycase.id,
                          Easycase.uniq_id,
                          Easycase.case_no,
@@ -1762,29 +1761,29 @@ class RequestsController extends AppController
                          is_sub_sub_task,
                          sub_sub_task,
 						 tot_spent_hour
-                         FROM easycases as Easycase 
+                         FROM easycases as Easycase
 					LEFT JOIN
                     (
                         SELECT
                          id,
                          parent_task_id AS is_sub_sub_task,
                          count(parent_task_id
-                    ) 
+                    )
                          sub_sub_task
                              FROM easycases as Easycase
-                             WHERE project_id=".$curProjId." AND istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " GROUP BY id,parent_task_id 
+                             WHERE project_id=".$curProjId." AND istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " GROUP BY id,parent_task_id
                     ) IS_SUB ON IS_SUB.id=Easycase.parent_task_id
                              LEFT JOIN easycase_milestones EasycaseMilestone on Easycase.id = EasycaseMilestone.easycase_id
                              LEFT JOIN (select sum(t.total_hours) as tot_spent_hour, t.task_id from log_times  t WHERE  t.project_id=".$curProjId." group by t.task_id ) as lt ON Easycase.id = lt.task_id
-                             WHERE 
-                                istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND 
+                             WHERE
+                                istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND
                                 Easycase.project_id=".$curProjId." AND
-                                Easycase.project_id<>0  " . $searchcase . " " . trim($qry) . " 
+                                Easycase.project_id<>0  " . $searchcase . " " . trim($qry) . "
                 ) AS Easycase
                  LEFT JOIN users User ON Easycase.assign_to=User.id
                  ORDER BY " . $orderby . "
                  LIMIT $limit1,$limit2";
-                //echo $req_sql;exit;	
+                //echo $req_sql;exit;
 
                     if ($gby == 'milestone') {
                         /*
@@ -1792,10 +1791,10 @@ class RequestsController extends AppController
                             $req_sql = "SELECT SQL_CALC_FOUND_ROWS Easycase.*,EasycaseMilestone.milestone_id as mid,User.short_name,IF((Easycase.assign_to =" . SES_ID . "),'Me',User.short_name) AS Assigned ,(SELECT parent_task_id from easycases where id=Easycase.parent_task_id AND Easycase.project_id='$curProjId' AND Easycase.project_id!=0) AS is_sub_sub_task,(SELECT count(parent_task_id) from easycases as E1 where E1.parent_task_id IN (SELECT id from easycases as E2 where E2.parent_task_id = Easycase.id AND Easycase.project_id='$curProjId' AND Easycase.project_id!=0) AND E1.project_id!=0 AND E1.project_id='$curProjId') AS sub_sub_task FROM ( SELECT Easycase.id,Easycase.uniq_id,Easycase.case_no,Easycase.case_count,Easycase.project_id,Easycase.user_id,Easycase.updated_by,Easycase.type_id,Easycase.priority,Easycase.title,Easycase.estimated_hours,Easycase.hours,Easycase.completed_task,Easycase.assign_to,Easycase.gantt_start_date,Easycase.due_date,Easycase.istype,Easycase.client_status,Easycase.format,Easycase.status,Easycase.legend,Easycase.is_recurring,Easycase.isactive,Easycase.dt_created,Easycase.actual_dt_created,Easycase.reply_type,Easycase.is_chrome_extension,Easycase.from_email,Easycase.depends,Easycase.children,Easycase.temp_est_hours,Easycase.seq_id,Easycase.parent_task_id,Easycase.story_point,Easycase.thread_count,Easycase.custom_status_id  FROM easycases as Easycase WHERE istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND Easycase.project_id='$curProjId' AND Easycase.project_id!=0  " . $searchcase . " " . trim($qry) . " ) AS Easycase LEFT JOIN users User ON Easycase.assign_to=User.id " . $case_join . " JOIN easycase_milestones EasycaseMilestone ON Easycase.id=EasycaseMilestone.easycase_id AND EasycaseMilestone.project_id ='" . $curProjId . "' " . $milstone_filter_condition . " ORDER BY " . $orderby . $mileSton_orderby . "  LIMIT $limit1,$limit2";
 
                               */
-                    
-                    
+
+
                         // Query optimized by Tapan sir(17.12.2020)
-                    
+
 					 $req_sql = "SELECT SQL_CALC_FOUND_ROWS Easycase.id,Easycase.uniq_id,Easycase.case_no,Easycase.case_count,Easycase.project_id,Easycase.user_id,Easycase.updated_by,Easycase.type_id,Easycase.priority,Easycase.title,Easycase.estimated_hours,Easycase.hours,Easycase.completed_task,Easycase.assign_to,Easycase.gantt_start_date,Easycase.initial_due_date,Easycase.due_date,Easycase.istype,Easycase.client_status,Easycase.format,Easycase.status,Easycase.legend,Easycase.is_recurring,Easycase.isactive,Easycase.dt_created,Easycase.actual_dt_created,Easycase.reply_type,Easycase.is_chrome_extension,Easycase.from_email,Easycase.depends,Easycase.children,Easycase.temp_est_hours,Easycase.seq_id,Easycase.parent_task_id,Easycase.story_point,Easycase.thread_count,Easycase.custom_status_id,EasycaseMilestone.milestone_id as mid,User.short_name,IF((Easycase.assign_to =" . SES_ID . "),'Me',User.short_name) AS Assigned ,Easycase.is_sub_sub_task,IFNULL(Easycase.sub_sub_task,0) as sub_sub_task FROM ( SELECT Easycase.id,Easycase.uniq_id,Easycase.case_no,Easycase.case_count,Easycase.project_id,Easycase.user_id,Easycase.updated_by,Easycase.type_id,Easycase.priority,Easycase.title,Easycase.estimated_hours,Easycase.hours,Easycase.completed_task,Easycase.assign_to,Easycase.gantt_start_date,Easycase.initial_due_date,Easycase.due_date,Easycase.istype,Easycase.client_status,Easycase.format,Easycase.status,Easycase.legend,Easycase.is_recurring,Easycase.isactive,Easycase.dt_created,Easycase.actual_dt_created,Easycase.reply_type,Easycase.is_chrome_extension,Easycase.from_email,Easycase.depends,Easycase.children,Easycase.temp_est_hours,Easycase.seq_id,Easycase.parent_task_id,Easycase.story_point,Easycase.thread_count,Easycase.custom_status_id,IS_SUB.is_sub_sub_task,IS_SUB.sub_sub_task FROM easycases as Easycase LEFT JOIN easycase_milestones EasycaseMilestone on Easycase.id = EasycaseMilestone.easycase_id LEFT JOIN (SELECT id,parent_task_id AS is_sub_sub_task,count(parent_task_id) sub_sub_task FROM easycases WHERE
                      project_id=".$curProjId." AND project_id!=0 AND istype=1 AND 1 AND isactive=1 	GROUP BY id,parent_task_id ) IS_SUB ON IS_SUB.id=Easycase.parent_task_id WHERE istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND Easycase.project_id='$curProjId' AND Easycase.project_id!=0  " . $searchcase . " " . trim($qry) . " ) AS Easycase LEFT JOIN users User ON Easycase.assign_to=User.id " . $case_join . " JOIN easycase_milestones EasycaseMilestone ON Easycase.id=EasycaseMilestone.easycase_id AND EasycaseMilestone.project_id ='" . $curProjId . "' " . $milstone_filter_condition . " ORDER BY " . $orderby . $mileSton_orderby . "  LIMIT $limit1,$limit2";
                     }
@@ -1877,17 +1876,17 @@ class RequestsController extends AppController
                 // Code commented by Tapan sir on 23.12.2020
                        $req_sql_cnt = "SELECT count(Easycase.id) as total FROM (SELECT Easycase.id,Easycase.uniq_id,Easycase.case_no,Easycase.case_count,Easycase.project_id,Easycase.user_id,Easycase.updated_by,Easycase.type_id,Easycase.priority,Easycase.title,Easycase.estimated_hours,Easycase.hours,Easycase.completed_task,Easycase.assign_to,Easycase.gantt_start_date,Easycase.due_date,Easycase.istype,Easycase.client_status,Easycase.format,Easycase.status,Easycase.legend,Easycase.is_recurring,Easycase.isactive,Easycase.dt_created,Easycase.actual_dt_created,Easycase.reply_type,Easycase.is_chrome_extension,Easycase.from_email,Easycase.depends,Easycase.children,Easycase.temp_est_hours,Easycase.seq_id,Easycase.parent_task_id,Easycase.story_point,Easycase.thread_count,Easycase.custom_status_id FROM easycases as Easycase WHERE istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND Easycase.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1' AND ProjectUser.company_id='" . SES_COMP . "') AND Easycase.project_id<>0  " . $searchcase . " " . trim($qry) . " ) AS Easycase ORDER BY Easycase.id DESC";
                     */
-				$req_sql_cnt = "SELECT count(Easycase.id) as total 
-        FROM easycases as Easycase 
+				$req_sql_cnt = "SELECT count(Easycase.id) as total
+        FROM easycases as Easycase
         LEFT JOIN easycase_milestones EasycaseMilestone on Easycase.id = EasycaseMilestone.easycase_id
-        WHERE istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND 
-        Easycase.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1' AND ProjectUser.company_id='" . SES_COMP . "') 
+        WHERE istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND
+        Easycase.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1' AND ProjectUser.company_id='" . SES_COMP . "')
         AND Easycase.project_id<>0  " . $searchcase . " " . trim($qry) . " ORDER BY Easycase.id DESC";
                     $tot = $this->Easycase->query($req_sql_cnt);
                 } else {
                     /* Code commented by Tapan Sir
                     $req_sql_cnt = "SELECT count(Easycase.id) as total FROM (SELECT Easycase.id,Easycase.uniq_id,Easycase.case_no,Easycase.case_count,Easycase.project_id,Easycase.user_id,Easycase.updated_by,Easycase.type_id,Easycase.priority,Easycase.title,Easycase.estimated_hours,Easycase.hours,Easycase.completed_task,Easycase.assign_to,Easycase.gantt_start_date,Easycase.due_date,Easycase.istype,Easycase.client_status,Easycase.format,Easycase.status,Easycase.legend,Easycase.is_recurring,Easycase.isactive,Easycase.dt_created,Easycase.actual_dt_created,Easycase.reply_type,Easycase.is_chrome_extension,Easycase.from_email,Easycase.depends,Easycase.children,Easycase.temp_est_hours,Easycase.seq_id,Easycase.parent_task_id,Easycase.story_point,Easycase.thread_count,Easycase.custom_status_id FROM easycases as Easycase WHERE istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND Easycase.project_id ='$curProjId' AND Easycase.project_id<>0  " . $searchcase . " " . trim($qry) . " ) AS Easycase ORDER BY Easycase.id DESC"; */
-                  
+
                    $req_sql_cnt = "SELECT count(Easycase.id) as total FROM easycases as Easycase LEFT JOIN easycase_milestones EasycaseMilestone on Easycase.id = EasycaseMilestone.easycase_id WHERE istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND Easycase.project_id ='$curProjId' AND Easycase.project_id<>0  " . $searchcase . " " . trim($qry) ;
                     $tot = $this->Easycase->query($req_sql_cnt);
                 }
@@ -2044,11 +2043,11 @@ class RequestsController extends AppController
         $task_ids = array_filter(array_unique(Hash::extract($caseAll, '{n}.Easycase.id')));
         $getAllCustomFields = [];
         if ($task_ids) {
-            $getAllCustomFields = $this->CustomFieldValue->getAllCustomFieldByTaskIds($task_ids, SES_COMP);     
+            $getAllCustomFields = $this->CustomFieldValue->getAllCustomFieldByTaskIds($task_ids, SES_COMP);
         }
         /* Checking whether the user is allowed to see Advanced custom fields */
-        $allowAdvancedCustomField = $this->Format->isAllowedAdvancedCustomFields();                     
-        $resCaseProj['allowAdvancedCustomField']= $allowAdvancedCustomField;      
+        $allowAdvancedCustomField = $this->Format->isAllowedAdvancedCustomFields();
+        $resCaseProj['allowAdvancedCustomField']= $allowAdvancedCustomField;
         /* --End-- */
         $this->loadModel('CustomField');
         $resCaseProj['allCustomFields'] = $this->CustomField->getAllActiveCustomFields();
@@ -2060,16 +2059,16 @@ class RequestsController extends AppController
         $resCaseProj['caseAll'] = $frmtCaseAll['caseAll'];
     //    pr($frmtCaseAll); exit;
         /* Calculating time balance for all looping task in task list page -Start- */
-         
-       $getActiveAdvCustomField = $this->CustomField->fetchActiveAdvCustomField(SES_COMP);                    
+
+       $getActiveAdvCustomField = $this->CustomField->fetchActiveAdvCustomField(SES_COMP);
        $activeAdvCustomFieldArray = Hash::extract($getActiveAdvCustomField, "{n}.CustomField.placeholder");
-     
+
        if(in_array('timeBalance',$activeAdvCustomFieldArray)) {
            $timeBalanceIsOn = '1';
        } else {
            $timeBalanceIsOn = '0';
-       }       
-        $resCaseProj['timeBalanceIsOn'] = $timeBalanceIsOn;     
+       }
+        $resCaseProj['timeBalanceIsOn'] = $timeBalanceIsOn;
         /* Calculating time balance for all looping task in task list page -End- */
         $resCaseProj['milestones'] = $frmtCaseAll['milestones'];
         $pgShLbl = $frmt->pagingShowRecords($CaseCount, $page_limit, $casePage);
@@ -2154,7 +2153,7 @@ class RequestsController extends AppController
         //$resCaseProj['customFieldNameArr'] = $getAllCustomFields[0];
         //$resCaseProj['advCustomFieldNameArr'] = $getAllCustomFields[1];
         //$resCaseProj['customFieldCount'] = count($getAllCustomFields[0]);
-        //$resCaseProj['advCustomFieldCount'] = count($getAllCustomFields[1]);        
+        //$resCaseProj['advCustomFieldCount'] = count($getAllCustomFields[1]);
     }else{
         $resCaseProj['totalColumnCount'] = 13;
     }
@@ -2168,14 +2167,14 @@ class RequestsController extends AppController
         $resCaseProj['customFieldNameArr'] = $getAllCustomFields[0];
         $resCaseProj['advCustomFieldNameArr'] = $getAllCustomFields[1];
         $resCaseProj['customFieldCount'] = count($getAllCustomFields[0]);
-        $resCaseProj['advCustomFieldCount'] = count($getAllCustomFields[1]);        
+        $resCaseProj['advCustomFieldCount'] = count($getAllCustomFields[1]);
     }else{
         $resCaseProj['totalColumnCount'] = 11;
     }
     // Checking whether the user is allowed to see Advanced custom fields
-    $allowAdvancedCustomField = $this->Format->isAllowedAdvancedCustomFields();                     
-    $resCaseProj['allowAdvancedCustomField']= $allowAdvancedCustomField;   
-    */   
+    $allowAdvancedCustomField = $this->Format->isAllowedAdvancedCustomFields();
+    $resCaseProj['allowAdvancedCustomField']= $allowAdvancedCustomField;
+    */
     /* --End-- */
         $resCaseProj['field_name_arr'] = $field_name_arr;
         $resCaseProj['over_due_task_count'] = $over_due_task_count;
@@ -2284,7 +2283,7 @@ class RequestsController extends AppController
         $postdata['data']=$this->params->query;
         //Setting up timezone manually
         $timezone = $this->Timezone->find('first', array("conditions" => array("Timezone.id" => $auth_user['User']['timezone_id'])));
-       
+
         if (isset($auth_user['User']['is_dst'])) {
             if (!defined('TZ_DST')) {
                 define('TZ_DST', $auth_user['User']['is_dst']);
@@ -2390,7 +2389,7 @@ class RequestsController extends AppController
             $filterenabled = 1;
         }
         /* jyoti end */
-        
+
         if ($caseMenuFilters) {
             setcookie('CURRENT_FILTER', $caseMenuFilters, COOKIE_REM, '/', DOMAIN_COOKIE, false, false);
         } else {
@@ -2400,13 +2399,13 @@ class RequestsController extends AppController
         ######## get project ID from project uniq-id ################
         $curProjId = null;
         $curProjShortName = null;
-        
+
         if ($projUniq != 'all') {
             /**
              * Binding of Project table is already done in ProjectUser model
              */
             $this->ProjectUser->bindModel(array('belongsTo' => array('Project')));
-            
+
             if (empty($inactiveFlag)) {
                 $projArr = $this->ProjectUser->find('first', array('conditions' => array('Project.uniq_id' => $projUniq, 'ProjectUser.user_id' => $auth_user['User']['id'], 'Project.isactive' => 1, 'ProjectUser.company_id' => $company_user['CompanyUser']['company_id']), 'fields' => array('Project.id', 'Project.short_name', 'ProjectUser.id')));
             } else {
@@ -2450,7 +2449,7 @@ class RequestsController extends AppController
             $qry.= $this->Format->labelFilter($caseLabel, $curProjId, $postdata['data']['SES_COMP'], $postdata['data']['SES_TYPE'], $postdata['data']['SES_ID']);
             $filterenabled = 1;
         }
-        
+
         ######### Filter by Priority ##########
         if (trim($priorityFil) && $priorityFil != "all") {
             $qry.= $this->Format->priorityFilter($priorityFil, $caseTypes);
@@ -2564,7 +2563,7 @@ class RequestsController extends AppController
             } elseif ($groupby == 'milestone') {
                 $gby = 'milestone';
                 $orderby .=" EasycaseMilestone.milestone_id ASC";
-                
+
                 if ((isset($_COOKIE['TASKGROUP_FIL']) && $_COOKIE['TASKGROUP_FIL']) || (isset($last_filter_taskgroup) && $last_filter_taskgroup)) {
                     if (trim($_COOKIE['TASKGROUP_FIL']) == 'active' || trim($last_filter_taskgroup) == 'active') {
                         $case_join = 'INNER';
@@ -2649,7 +2648,7 @@ class RequestsController extends AppController
             $frmTz = '+00:00';
             $toTz = $this->Tmzone->getGmtTz(TZ_GMT, TZ_DST);
             $GMT_DATE =$this->Tmzone->GetDateTime(SES_TIMEZONE, TZ_GMT, TZ_DST, TZ_CODE, GMT_DATETIME, "datetime");
-            
+
             if (trim($case_date) == 'one') {
                 $one_date = date('Y-m-d H:i:s', strtotime($GMT_DATE) - 3600);
                 $qry.= " AND CONVERT_TZ(Easycase.dt_created,'".$frmTz."','".$toTz."') >='" . $one_date . "'";
@@ -2679,7 +2678,7 @@ class RequestsController extends AppController
                 $qry.= " AND DATE(CONVERT_TZ(Easycase.dt_created,'".$frmTz."','".$toTz."')) >= '" . date('Y-m-d', strtotime($frm_dt)) . "' AND DATE(CONVERT_TZ(Easycase.dt_created,'".$frmTz."','".$toTz."')) <= '" . date('Y-m-d', strtotime($to_dt)) . "'";
             }
         }
-        
+
 
         if (trim($case_duedate) != "") {
             $case_duedate = urldecode($case_duedate);
@@ -3060,7 +3059,7 @@ class RequestsController extends AppController
                     }
                 }
             }
-            
+
             if ($gby == 'milestone') {
                 if ($projUniq == 'all') {
                     $req_sql_cnt = "SELECT count(Easycase.id) as cnt FROM ( SELECT Easycase.* FROM easycases as Easycase WHERE istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND Easycase.project_id!=0 AND Easycase.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser,projects as Project WHERE ProjectUser.user_id=" . $auth_user['User']['id'] . " AND ProjectUser.project_id=Project.id AND Project.isactive='1' AND ProjectUser.company_id='" . $company_user['CompanyUser']['company_id'] . "') " . $searchcase . " " . trim($qry) . " ) AS Easycase " . $case_join . " JOIN easycase_milestones EasycaseMilestone ON Easycase.id=EasycaseMilestone.easycase_id" . $milstone_filter_condition . " LEFT JOIN users User ON Easycase.assign_to=User.id ORDER BY " . $orderby;
@@ -3070,7 +3069,7 @@ class RequestsController extends AppController
                     //Code commented by Tapan sir
 
                     $req_sql_cnt = "SELECT count(Easycase.id) as cnt FROM ( SELECT Easycase.* FROM easycases as Easycase WHERE istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND Easycase.project_id='$curProjId' AND Easycase.project_id!=0  " . $searchcase . " " . trim($qry) . " ) AS Easycase " . $case_join . " JOIN easycase_milestones EasycaseMilestone ON Easycase.id=EasycaseMilestone.easycase_id" . $milstone_filter_condition . " LEFT JOIN users User ON Easycase.assign_to=User.id ORDER BY " . $orderby; */
-                    
+
                     $req_sql_cnt = "SELECT count(Easycase.id) as cnt FROM easycases as Easycase WHERE istype=1 AND " . $clt_sql . " " . $cond_easycase_actuve . " AND Easycase.project_id=$curProjId AND Easycase.project_id!=0  " . $searchcase . " " . trim($qry);
                     $tot = $this->Easycase->query($req_sql_cnt);
                 }
@@ -3233,8 +3232,8 @@ class RequestsController extends AppController
 
         $pgShLbl = $frmt->pagingShowRecords($CaseCount, $page_limit, $casePage);
         $resCaseProj['pgShLbl'] = $pgShLbl;
-        
-        
+
+
         $curCreated = $tz->GetDateTime($timezone['Timezone']['id'], $timezone['Timezone']['gmt_offset'], TZ_DST, TZ_CODE, GMT_DATETIME, "datetime");
         $friday = date('Y-m-d', strtotime($curCreated . "next Friday"));
         $monday = date('Y-m-d', strtotime($curCreated . "next Monday"));
@@ -3249,7 +3248,7 @@ class RequestsController extends AppController
         $resCaseProj['milesto_names'] = $mileSton_names;
         $resCaseProj['all_milesto_names'] = $all_mileSton_names;
         $resCaseProj['all_milesto_prj_names'] = ($all_prj_names != null && $all_prj_names) ? $all_prj_names : 0;
-        
+
         if ($projUniq != 'all') {
             $projUser = array();
             if ($projUniq) {
@@ -3368,7 +3367,7 @@ class RequestsController extends AppController
                 $c_status = '';
                 foreach ($expst as $st) {
                     $c_status .= "<span class='filter_opn' title='Task Status' onclick='openfilter_popup(1,\"dropdown_menu_all_filters\");allfiltervalue(\"status\");'>" . $this->Format->displayCustomStatus($st) . "<a href='javascript:void(0);' onclick='common_reset_filter(\"customtaskstatus\",\"" .'custom_status_'.$st . "\",this);' class='fr'><i class='material-icons'>&#xE14C;</i></a></span>"; //$this->Format->displayStatus($st).", ";
-                    
+
                     //strrev($st)
                 }
             } else {
@@ -3499,7 +3498,7 @@ class RequestsController extends AppController
         } else {
             $arr['case_comment'] = 'All';
         }
-        
+
         //For Case Members
         if (isset($this->params->data['caseMember']) && $this->params->data['caseMember']) {
             $case_member = $this->params->data['caseMember'];
@@ -3916,7 +3915,7 @@ class RequestsController extends AppController
                 $frmTz = '+00:00';
                 $toTz = $this->Tmzone->getGmtTz(TZ_GMT, TZ_DST);
                 $GMT_DATE =$this->Tmzone->GetDateTime(SES_TIMEZONE, TZ_GMT, TZ_DST, TZ_CODE, GMT_DATETIME, "datetime");
-                
+
                 if (trim($case_date) == 'one') {
                     $one_date = date('Y-m-d H:i:s', strtotime($GMT_DATE) - 3600);
                     $qry.= " AND CONVERT_TZ(Easycase.dt_created,'".$frmTz."','".$toTz."') >='" . $one_date . "'";
@@ -4195,12 +4194,12 @@ class RequestsController extends AppController
 							}else{
 								$projQry = "AND Easycase.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser, projects as Project WHERE ProjectUser.company_id=" . SES_COMP . " AND ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1')";
 								$projMilQry = "AND Milestone.project_id IN (SELECT ProjectUser.project_id FROM project_users AS ProjectUser, projects as Project WHERE ProjectUser.company_id=" . SES_COMP . " AND ProjectUser.user_id=" . SES_ID . " AND ProjectUser.project_id=Project.id AND Project.isactive='1')";
-							}	
+							}
 						}else{
 							$projQry = "AND Easycase.project_id =". $proj_id;
 							$projMilQry = "AND Milestone.project_id =". $proj_id;
 						}
-						
+
             $groupArr = $this->Milestone->query("SELECT DISTINCT Milestone.id, Milestone.title,(select count(DISTINCT Easycase.case_no) from easycases as Easycase,easycase_milestones AS em WHERE Easycase.id= em.easycase_id AND em.milestone_id = Milestone.id AND Easycase.isactive='1' AND $clt_sql ".$projQry." $restrictedQuery AND Easycase.istype='1') AS cases FROM milestones as Milestone WHERE Milestone.company_id='" .SES_COMP."' ".$projMilQry." ORDER BY Milestone.id_seq ASC");
 
            $getAllDefaulttasks = $this->Easycase->query("SELECT count(DISTINCT Easycase.case_no) AS cnt from easycases as Easycase LEFT JOIN easycase_milestones AS em ON Easycase.id= em.easycase_id WHERE em.milestone_id IS NULL AND Easycase.isactive='1' AND $clt_sql ".$projQry." $restrictedQuery AND Easycase.istype='1'");
@@ -4251,7 +4250,7 @@ class RequestsController extends AppController
             }
 						if(!empty($pids)){
             $pids_implode = implode(',', $pids);
-            
+
 						}else{
 							$pids_implode = 0;
 						}
@@ -4259,7 +4258,7 @@ class RequestsController extends AppController
             WHERE CASE WHEN (SELECT COUNT(*) AS total FROM type_companies WHERE company_id = " . SES_COMP . " HAVING total >=1) THEN id IN (SELECT type_id FROM type_companies WHERE company_id = " . SES_COMP . ") ELSE company_id = 0 End AND t.project_id in (".$pids_implode.")
             ORDER BY count DESC";
                     $typeArr = $this->Easycase->query($types_sql);*/
-                
+
                     /*$types_sqlD = "select DISTINCT t.name,t.id,t.short_name,t.company_id,(select count(Easycase.id) from easycases as Easycase" . $mlstnQ1 . " where Easycase.istype='1'".$assginto." AND " . $clt_sql.$restrictedQuery . " AND Easycase.type_id=t.id AND Easycase.isactive='1' " . $mlstnQ2 . $projQry . " ) as count from types as t
                     WHERE t.company_id = ".SES_COMP." AND t.project_id in (".$pids_implode.")
                     ORDER BY count DESC";
@@ -4269,11 +4268,11 @@ class RequestsController extends AppController
             ORDER BY count DESC";
             $typeArr = $this->Easycase->query($types_sql);
                     pr($typeArr);*/
-                    
+
                     $this->loadModel('Type');
                     $this->Type->bindModel(array('belongsTo' => array('Project')));
                     $allTypes = $this->Type->find('all', array('conditions' => array('Type.company_id'=>array(0,SES_COMP)),'fields'=>array('Type.id','Type.name','Type.short_name','Type.company_id','Project.short_name','Project.name'), 'order' => array('Type.company_id'=> 'ASC','Type.name'=> 'ASC')));
-                    
+
                     $types_sql = "select count(e.id) as cnt,t.name,t.id,t.short_name,t.company_id from types as t LEFT JOIN easycases as e on e.type_id=t.id where e.project_id in (".$pids_implode.") and e.istype=1 and e.isactive=1 group by type_id order by t.company_id ASC";
                     $typeArr_new = $this->Easycase->query($types_sql);
                     if (!empty($typeArr_new)) {
@@ -4486,9 +4485,9 @@ class RequestsController extends AppController
                      }
                     // echo "SELECT COUNT(Easycase.id) as count,if(Easycase.type_id=10,Easycase.legend,Easycase.legend) AS legend FROM easycases as Easycase" . $mlstnQ1 . " WHERE Easycase.istype='1' AND " . $clt_sql . " AND Easycase.isactive='1' AND ".$cstm_qry." AND Easycase.project_id!=0 " . $mlstnQ2 . $projQry . $searchcase .$qry_S.$restrictedQuery. "  GROUP BY Easycase.legend";exit;
                     $common_qry = $this->Easycase->query("SELECT COUNT(Easycase.id) as count,if(Easycase.type_id=10,Easycase.legend,Easycase.legend) AS legend FROM easycases as Easycase" . $mlstnQ1 . " WHERE Easycase.istype='1' AND " . $clt_sql . " AND Easycase.isactive='1' AND ".$cstm_qry." AND Easycase.project_id!=0 " . $mlstnQ2 . $projQry . $searchcase .$qry_S.$restrictedQuery. "  GROUP BY Easycase.legend"); //if(Easycase.type_id=10,10,Easycase.legend)
-                    
+
                     #print "SELECT COUNT(Easycase.id) as count,if(Easycase.type_id=10,10,Easycase.legend) AS legend FROM easycases as Easycase" . $mlstnQ1 . " WHERE Easycase.istype='1' AND " . $clt_sql . " AND  Easycase.isactive='1' AND Easycase.project_id!=0 " . $mlstnQ2 . $projQry . $searchcase .$qry_S.$restrictedQuery. "  GROUP BY if(Easycase.type_id=10,10,Easycase.legend)";exit;
-                    
+
                     $customStatus = 0;
                     if ($proj_uniq_id != 'all') {
                         $customStatus = $this->Format->hasCustomTaskStatus($curProjId, 'Project.id');
@@ -4570,10 +4569,10 @@ class RequestsController extends AppController
                     if ($page_type == 'ajax_status') {
                         $query_Attch1 = $this->Easycase->query("SELECT COUNT(Easycase.id) as count FROM easycases as Easycase" . $mlstnQ1 . " WHERE Easycase.istype='1' AND  Easycase.isactive='1' AND " . $clt_sql . " AND Easycase.format='1' AND Easycase.project_id!=0 " . $mlstnQ2 . $projQry . " " . trim($qry) .$restrictedQuery. "");
                         $query_Attch = $query_Attch1['0']['0']['count'];
-                        
+
                         $this->set('projuniq', $proj_uniq_id);
                         $this->set('pageload', $pageload);
-                        
+
                         $this->set('query_All', $query_All);
                         $this->set('query_New', $query_New);
                         $this->set('query_Open', $query_Open);
@@ -4821,7 +4820,7 @@ class RequestsController extends AppController
         }
         if ($projFil == 'all') {
             //target_40
-            
+
             /*Code Commented by Tapan Sir(30.12.2020)
 
 
@@ -4858,7 +4857,7 @@ class RequestsController extends AppController
                    . "WHERE `LogTime`.`project_id`='$project_id' AND Easycase.isactive=1 " . $usrCndtn . " " . $tskCndtn . "  $where "
                    . "ORDER BY $orderby LIMIT $limit1, $limit2";
                */
-                
+
             $logsql = "SELECT SQL_CALC_FOUND_ROWS LogTime.*, "
                     . " DATE_FORMAT(LogTime.start_datetime,'%M %d %Y %H:%i:%s') AS start_datetime_v1,"
                     . "(SELECT CONCAT_WS(' ',User.name,User.last_name) FROM users AS `User` WHERE `User`.id=LogTime.user_id) AS user_name, "
@@ -5026,7 +5025,7 @@ class RequestsController extends AppController
           exit; */
     }
 
-    
+
     public function ajaxemail($oauth_arg = null)
     {
         $oauth_return = 0;
@@ -5225,7 +5224,7 @@ class RequestsController extends AppController
     {
         $project_id = $this->data['project_id'];
         $caseIds = $this->data['EasycaseIds'];
-      
+
         #pr($this->data);exit;
         $casedata = $this->Easycase->find('first', array('conditions' => array('Easycase.id' => $caseId, 'Easycase.project_id' => $project_id)));
         $parent_task_id = $casedata['Easycase']['parent_task_id'];
@@ -5276,11 +5275,11 @@ class RequestsController extends AppController
         $searchcase = "";
         $qry = "" ;
         $orderby = "Easycase.dt_created DESC";
-    
+
         $req_sql = "SELECT SQL_CALC_FOUND_ROWS Easycase.id,Easycase.title,Easycase.case_no FROM ( "
             . "SELECT * FROM easycases as Easycase WHERE istype='1' AND " . $clt_sql . " " . $cond_easycase_actuve . " AND Easycase.project_id='".$projects['Project']['id']."' AND Easycase.project_id!=0  " . $searchcase . " " . trim($qry) . " ) AS Easycase LEFT JOIN users User ON Easycase.assign_to=User.id ORDER BY " . $orderby . " ";
         $tasks = $this->Easycase->query($req_sql);
-   
+
         if (count($tasks)) {
             $arr['tasks'] =  $tasks;
             $arr['status'] =  1;
@@ -5314,7 +5313,7 @@ class RequestsController extends AppController
         if (!empty($this->data)) {
             $est_hr = $this->data['est_hour'];
             ;
-        
+
             $defaultAssignto = $this->data['assign_to'];
             $easyCaseExist = $this->Easycase->find('first', array('conditions' => array('Easycase.id' => $this->data['CS_parent_id'],'Easycase.istype' => 1,'Easycase.isactive' => 1), 'fields' => array('Easycase.id', 'Easycase.case_no', 'Easycase.project_id', 'Easycase.isactive', 'Easycase.istype','Easycase.uniq_id', 'Easycase.legend','Easycase.custom_status_id')));
             if ($easyCaseExist) {
@@ -5475,7 +5474,7 @@ class RequestsController extends AppController
             $this->loadModel('EasycaseLinking');
             $pref = $this->EasycaseLinking->find('list', array('conditions'=>array('easycase_id'=>$task_id),'fields'=>array('id','link_id')));
         }
-        
+
         //print_r($pref); exit;
         $prefList =" ";
         if (!empty($pref)) {
@@ -5634,7 +5633,7 @@ class RequestsController extends AppController
                 /* End */
                 $caseuniqid = $this->Format->generateUniqNumber();
                 $this->Easycase->query("INSERT INTO easycases SET uniq_id='" . $caseuniqid . "', user_id='" . SES_ID . "', format='2', istype='2', actual_dt_created='" . GMT_DATETIME . "', case_no='" . $caseStsNo . "', project_id='" . $closeStsPid . "', type_id='" . $closeStsTyp . "', priority='" . $closeStsPri . "', status='" . $csSts . "', legend='" . $csLeg . "', dt_created='" . GMT_DATETIME . "'");
-                
+
                 $prjuniqid = $projdetl[0]['projects']['uniq_id']; //print_r($prjuniq);
                 $projShName = strtoupper($projdetl[0]['projects']['short_name']);
                 $channel_name = $prjuniqid;
@@ -5985,7 +5984,7 @@ class RequestsController extends AppController
             $frmTz = '+00:00';
             $toTz = $this->Tmzone->getGmtTz(TZ_GMT, TZ_DST);
             $GMT_DATE =$this->Tmzone->GetDateTime(SES_TIMEZONE, TZ_GMT, TZ_DST, TZ_CODE, GMT_DATETIME, "datetime");
-            
+
             if (trim($case_date) == 'one') {
                 $one_date = date('Y-m-d H:i:s', strtotime($GMT_DATE) - 3600);
                 $qry.= " AND CONVERT_TZ(Easycase.dt_created,'".$frmTz."','".$toTz."') >='" . $one_date . "'";
@@ -6015,7 +6014,7 @@ class RequestsController extends AppController
                 $qry.= " AND DATE(CONVERT_TZ(Easycase.dt_created,'".$frmTz."','".$toTz."')) >= '" . date('Y-m-d', strtotime($frm_dt)) . "' AND DATE(CONVERT_TZ(Easycase.dt_created,'".$frmTz."','".$toTz."')) <= '" . date('Y-m-d', strtotime($to_dt)) . "'";
             }
         }
-        
+
 
         if (trim($case_duedate) != "") {
             $frmTz = '+00:00';
@@ -6457,7 +6456,7 @@ class RequestsController extends AppController
                 }
             }
             $all_mileSton_names = $this->Milestone->find('all', $cond);
-            
+
             $milestone_pids = null;
             if ($projUniq == 'all' && $all_mileSton_names) {
                 $milestone_pids = array_unique(Hash::extract($all_mileSton_names, '{n}.Milestone.project_id'));
@@ -6621,7 +6620,7 @@ class RequestsController extends AppController
 
             //fetch all child tasks
             $related_tasks = !empty($taskIds) ? $this->Easycase->getSubTaskChild($taskIds, $curProjId) : array();
-            
+
             if (!empty($related_tasks['child'])) {
                 $sub_task_condition = " Easycase.id IN ('" . implode('\',\'', $related_tasks['child']) . "') AND ";
                 $sub_task_sql = "SELECT SQL_CALC_FOUND_ROWS Easycase.*,EasycaseMilestone.milestone_id AS mid, User.short_name,"
@@ -6711,7 +6710,7 @@ class RequestsController extends AppController
         }
         $projUniq = $proj_uniq_id;
         $curProjId = $proj_id;
-        
+
         $customStatus = 0;
         if ($proj_uniq_id != 'all') {
             $customStatus = $this->Format->hasCustomTaskStatus($curProjId, 'Project.id');
@@ -6739,7 +6738,7 @@ class RequestsController extends AppController
         $this->set('allCustomStatus', $allStatusNames);
         $this->render('/Easycase/ajax_status_archive', 'ajax');
     }
-    
+
     /*for status filter in pending task page*/
     public function ajax_pending_sts_filter()
     {
@@ -6760,7 +6759,7 @@ class RequestsController extends AppController
         }
         $projUniq = $proj_uniq_id;
         $curProjId = $proj_id;
-        
+
         $customStatus = 0;
         if ($proj_uniq_id != 'all') {
             $customStatus = $this->Format->hasCustomTaskStatus($curProjId, 'Project.id');
@@ -6788,7 +6787,7 @@ class RequestsController extends AppController
         $this->set('allCustomStatus', $allStatusNames);
         $this->render('/Easycase/ajax_status_pending', 'ajax');
     }
-    
+
     /*for status filter in pending task page*/
     public function ajax_utilization_sts_filter()
     {
@@ -6809,7 +6808,7 @@ class RequestsController extends AppController
         }
         $projUniq = $proj_uniq_id;
         $curProjId = $proj_id;
-        
+
         $customStatus = 0;
         if ($proj_uniq_id != 'all') {
             $customStatus = $this->Format->hasCustomTaskStatus($curProjId, 'Project.id');
@@ -6839,7 +6838,7 @@ class RequestsController extends AppController
     }
     //Checklists
     //Checklist end
-    
+
     public function case_subtask_list()
     {
         $this->layout = 'ajax';
@@ -7474,7 +7473,7 @@ class RequestsController extends AppController
                                 $prjuniqid = $prjuniq[0]['projects']['uniq_id']; //print_r($prjuniq);
                                 $projShName = strtoupper($prjuniq[0]['projects']['short_name']);
                                 $channel_name = $prjuniqid;
-                                
+
                                 if ($csLeg == 3) {
                                     //on close of parent task close all children tasks
                                     $child_tasks = $this->Easycase->getSubTaskChild($commonCaseId, $caseDataArr['Easycase']['project_id']);
@@ -7588,7 +7587,7 @@ class RequestsController extends AppController
                                 $prjuniqid = $prjuniq[0]['projects']['uniq_id']; //print_r($prjuniq);
                                 $projShName = strtoupper($prjuniq[0]['projects']['short_name']);
                                 $channel_name = $prjuniqid;
-                                
+
                                 if ($csLeg == 3) {
                                     //on close of parent task close all children tasks
                                     $child_tasks = $this->Easycase->getSubTaskChild($commonCaseId, $caseDataArr['Easycase']['project_id']);
@@ -7646,7 +7645,7 @@ class RequestsController extends AppController
         $resCaseProj['csPage'] = $casePage;
         $resCaseProj['caseUrl'] = $caseUrl;
         $resCaseProj['projUniq'] = $projUniq;
-        
+
         $resCaseProj['csdt'] = $caseDate;
         $resCaseProj['csTtl'] = $caseTitle;
         $resCaseProj['csDuDt'] = $caseDueDate;
@@ -7671,7 +7670,7 @@ class RequestsController extends AppController
             $limit2 = $page_limit;
         }
 
-        
+
         $fields = array('Easycase.id','Easycase.uniq_id','Easycase.case_no','Easycase.case_count','Easycase.project_id','Easycase.user_id','Easycase.updated_by','Easycase.type_id','Easycase.priority','Easycase.title','Easycase.estimated_hours','Easycase.hours','Easycase.completed_task','Easycase.assign_to','Easycase.gantt_start_date','Easycase.due_date','Easycase.istype','Easycase.client_status','Easycase.format','Easycase.status','Easycase.legend','Easycase.is_recurring','Easycase.isactive','Easycase.dt_created','Easycase.actual_dt_created','Easycase.reply_type','Easycase.is_chrome_extension','Easycase.from_email','Easycase.depends','Easycase.children','Easycase.temp_est_hours','Easycase.seq_id','Easycase.parent_task_id','Easycase.story_point','Easycase.thread_count','Easycase.custom_status_id','Easycase.parent_id','User.short_name','User.name','AssignTo.short_name','AssignTo.photo','AssignTo.name','AssignTo.last_name','Project.uniq_id','Project.name','CustomStatus.*','Type.name'
         );
         $clt_sql = ltrim(trim($clt_sql), 'AND');
@@ -7691,7 +7690,7 @@ class RequestsController extends AppController
         }
 
 
- 
+
         $this->Easycase->bindModel(array('belongsTo' => array(
                 'User'=>array('className'=>'User','foreignKey'=>'user_id'),
                 'AssignTo'=>array('className'=>'User','foreignKey'=>'assign_to'),
@@ -7701,7 +7700,7 @@ class RequestsController extends AppController
             )));
         //added to fix the task group  page sub task view loading issue
         $orderby = trim($orderby, ' , ');
-                
+
         $resCaseProj = $this->Easycase->find('threaded', array('conditions'=>$conditions,'fields'=>$fields,'order'=>$orderby)); //,'limit'=>$limit2,'offset'=>$limit1
         $allcaseCount = $this->Easycase->find('count', array('conditions'=>$conditions,'order'=>$orderby));
         $totPages = ($allcaseCount/$page_limit);
@@ -7766,7 +7765,7 @@ class RequestsController extends AppController
         echo json_encode($resultArr);
         exit;
     }
-            
+
     public function loadTaskGroup()
     {
         $this->layout = 'ajax';
@@ -7814,11 +7813,11 @@ class RequestsController extends AppController
         $searchMilestoneUid = $this->params->data['searchMilestoneUid']; // Search Milestone Unique Id wise
         $filterenabled = 0;
         $clt_sql = 1;
-        
+
         $this->loadModel('Projects');
         $prj = $this->Project->getProjectFields(array("Project.uniq_id" => $projUniq), array("Project.id","Project.task_type"));
         $defaultTaskType = $prj['Project']['task_type'];
-        
+
         if ($this->Auth->user('is_client') == 1) {
             $clt_sql = "((Easycase.client_status = " . $this->Auth->user('is_client') . " AND Easycase.user_id = " . $this->Auth->user('id') . ") OR Easycase.client_status != " . $this->Auth->user('is_client') . ")";
         }
@@ -7875,7 +7874,7 @@ class RequestsController extends AppController
         ######## get project ID from project uniq-id ################
         $curProjId = null;
         $curProjShortName = null;
-        
+
         if ($projUniq != 'all') {
             $this->loadModel('ProjectUser');
             $this->ProjectUser->bindModel(array('belongsTo' => array('Project')));
@@ -8075,8 +8074,8 @@ class RequestsController extends AppController
             $qry.= " AND Easycase.assign_to='0'";
             $filterenabled = 1;
         }
-        
-    
+
+
         ######### Filter by $caseMenuFilters ##########
         if ($caseMenuFilters == "assigntome") {
             $qry.= " AND (Easycase.assign_to=" . SES_ID . ")";
@@ -8167,14 +8166,14 @@ class RequestsController extends AppController
             }
         }
          /* Start Code for adding ACF when status changed to close */
-        if(!empty($caseUniqId)){           
+        if(!empty($caseUniqId)){
             $saveAdvCustomFields = $this->Easycase->advCustomFieldAction($caseUniqId);
 
            if ($saveAdvCustomFields) {
                 $resCaseProj['advancedCustomFieldSave'] = 'success';
             } else {
                 $resCaseProj['advancedCustomFieldSave'] = 'error';
-            }                                                            
+            }
         }
         /* End Code for adding ACF when status changed to close */
         //echo $startCaseId."---".$caseResolve."---".$caseUniqId."----".$caseNew;exit;
@@ -8411,11 +8410,11 @@ class RequestsController extends AppController
                 . "LEFT JOIN (SELECT count(*) as cnt , EM.milestone_id,EM.m_order from easycase_milestones as EM Left join easycases as Easycase ON EM.easycase_id=Easycase.id  WHERE EM.project_id=".$curProjId." AND Easycase.isactive=1 AND  Easycase.istype=1 GROUP BY EM.milestone_id ) as EasycaseMilestone ON Milestone.id=EasycaseMilestone.milestone_id ";
         $where = " WHERE Milestone.project_id='" . $curProjId . "' ";
         $groupby = " GROUP BY Milestone.id ";
-    
+
         #print $sql1.$fields.$sql2.$where.$searchMilestone.$groupby." ORDER BY ".$orderbyMilestone." LIMIT $limit1,$limit2";exit;
         if (!empty($curProjId)) {
             //  $caseCount = $this->Milestone->query($sql1 . $count . $sql2 . $where); /*commted by Tapan sir */
-      
+
             $sql1_new = " SELECT SQL_CALC_FOUND_ROWS  COUNT(DISTINCT Milestone.id) as caseCount  FROM milestones AS Milestone ";
             $where_new = " WHERE Milestone.project_id='" . $curProjId . "' ";
             $caseCount = $this->Milestone->query($sql1_new. $where_new);
@@ -8423,17 +8422,17 @@ class RequestsController extends AppController
         } else {
             $resCaseProj['caseCount'] = 0;
         }
-                
+
         //  $resCaseProj['caseCount'] = $caseCount[0][0]['caseCount'];
         $resCaseProj['GrpBy'] = 'milestone';
         //$caseMenuFilters='milestone';
-        
+
         if (!empty($curProjId)) {
             $caseAll = $this->Milestone->query($sql1 . $fields . $sql2 . $where . $searchMilestone . $groupby . " ORDER BY " . $orderbyMilestone . " LIMIT $limit1,$limit2");
         } else {
             $caseAll=array();
         }
-    
+
         $lastcount = count($caseAll);
         if ($lastcount) {
             foreach ($caseAll as $k => $v) {
@@ -8443,7 +8442,7 @@ class RequestsController extends AppController
             }
         }
 
-            
+
         //pr($caseAll);exit;
         if ($limit1 == 0) {
             $caseAll[$lastcount]['Milestone']['id'] = 0;
@@ -8539,7 +8538,7 @@ class RequestsController extends AppController
         }
         $resCaseProj['customStatusByProject'] = $customStatusByProject;
         $resCaseProj['curProjId'] = $curProjId;
-        
+
         $resCaseProj['field_name_arr'] = $field_name_arr;
         $this->set('resCaseProj', json_encode($resCaseProj));
     }
@@ -8757,7 +8756,7 @@ class RequestsController extends AppController
                 $qry .= ")";
             }
         }
-       
+
         ######### Filter by Case Types ##########
         if (trim($caseTypes) && $caseTypes != "all") {
             $qry.= $this->Format->typeFilter($caseTypes);
@@ -8818,7 +8817,7 @@ class RequestsController extends AppController
                 // }
             }
         }
-        
+
 
         $searchMilestone = "";
         ###############Searching Conditions ##############
@@ -8962,7 +8961,7 @@ class RequestsController extends AppController
                                 $resCaseProj[$k]['children'][$k1]['Easycase']['formated_due_date'] = date('M d', strtotime($formated_due_date));
                             }
                              * */
-                            
+
                       /*  }else{
                             $resCaseProj[$k]['children'][$k1]['Easycase']['formated_due_date'] ='';
                              $resCaseProj[$k]['children'][$k1]['Easycase']['csDuDtFmtT'] = '';
@@ -9012,7 +9011,7 @@ class RequestsController extends AppController
                             $resCaseProj[$k]['children'][$k1]['children'][$k2]['Easycase']['formated_due_date'] = date('M d', strtotime($formated_due_date));
                         }
                              * */
-                                 
+
                       /*  }else{
                             $resCaseProj[$k]['children'][$k1]['children'][$k2]['Easycase']['formated_due_date'] = '';
                             $resCaseProj[$k]['children'][$k1]['children'][$k2]['Easycase']['csDuDtFmtT'] = '';
@@ -9048,7 +9047,7 @@ class RequestsController extends AppController
         $prjs = $this->Project->getProjectFields(array("Project.uniq_id" => $projUniq), array("Project.id","Project.task_type"));
         $defaultTaskType = $prjs['Project']['task_type'];
         $resultArr['defaultTaskType'] =$defaultTaskType;
-    
+
         $projUser1 = array();
         if ($projUniq) {
             $projUser1 = array($projUniq => $this->Easycase->getMemebers($projUniq, 0, 0, 1));
@@ -9057,8 +9056,8 @@ class RequestsController extends AppController
             }
         }
         $resultArr['QTAssigns'] =!empty($QTAssigns)?$QTAssigns:array();
-     
-    
+
+
         $resultArr['mid'] =$mid;
         $resultArr['resCaseProj'] = $resCaseProj;
         $resultArr['casePage'] = $casePage;
@@ -9082,9 +9081,9 @@ class RequestsController extends AppController
 				$this->Project->recursive = -1;
 				$prj = $this->Project->find("first",array("conditions"=>array("Project.uniq_id"=>$projUniq)));
 				$curProjId = $prj['Project']['id'];
-				
+
 				$page_limit = CASE_PAGE_LIMIT;
-				
+
         $this->loadModel("Easycase");
         $this->Easycase->Behaviors->enable('Tree');
         $this->Easycase->virtualFields['parent_id'] = 'Easycase.parent_task_id';
@@ -9092,7 +9091,7 @@ class RequestsController extends AppController
         ############Decleration of Variables ###############
         $resCaseProj = array();
         $this->_datestime();
-        
+
         $projIsChange = $this->params->data['projIsChange']; // Project Uniq ID
         $caseStatus = $this->params->data['caseStatus']; // Filter by Status(legend)
         $caseCustomStatus = $this->params->data['caseCustomStatus']; // Filter by Status(legend)
@@ -9128,10 +9127,10 @@ class RequestsController extends AppController
         $customfilterid = $this->params->data['customfilter'];
         $detailscount = $this->params->data['detailscount']; // Count number to open casedetails
         $searchMilestoneUid = $this->params->data['searchMilestoneUid']; // Search Milestone Unique Id wise
-				
+
         $viewType = $this->params->data['viewType']; //for sub and sub sub task
         $parentId = $this->params->data['parentId']; //for sub and sub sub task
-				
+
         $filterenabled = 0;
         $clt_sql = 1;
         if ($this->Auth->user('is_client') == 1) {
@@ -9197,7 +9196,7 @@ class RequestsController extends AppController
 
         $resCaseProj['caseMenuFilters'] = $caseMenuFilters;
         $resCaseProj['filterenabled'] = $filterenabled;
-        ##########End the result array for search and pagination variables ##################  
+        ##########End the result array for search and pagination variables ##################
         ################Filter Starts#################################
         $qry = '';
         $all_rest = '';
@@ -9205,7 +9204,7 @@ class RequestsController extends AppController
         if(!$this->Format->isAllowed('View All Task',$roleAccess)){
              $qry.= " AND (Easycase.assign_to=" . SES_ID . " OR Easycase.user_id=".SES_ID.")";
         }
-        #######################Search by filter Date#######################          
+        #######################Search by filter Date#######################
         if (trim($case_date) != "") {
 					if((SES_COMP == 25814 || SES_COMP == 28528 || SES_COMP == 1358) && (trim($caseComment) && $caseComment != "all")){
 							// Modified for jayan (if date filter with commented by filter is applied then now apply the date filter in the parent task)
@@ -9275,18 +9274,18 @@ class RequestsController extends AppController
 					$qry.= " AND (";
 					$qry.= $this->Format->customStatusFilter($caseCustomStatus, $projUniq, $caseStatus, 1);
 					$stsLegArr = $caseCustomStatus . "-" . "";
-					$expStsLeg = explode("-", $stsLegArr);            
+					$expStsLeg = explode("-", $stsLegArr);
 				}
         ######### Filter by Status ##########
         if (trim($caseStatus) && $caseStatus != "all") {
             $filterenabled = 1;
 					if(!$is_def_status_enbled){
-						$qry.= " AND (";	
+						$qry.= " AND (";
 					}else{
 						$qry.= " OR ";
 					}
 					$qry.= $this->Format->statusFilter($caseStatus, '', 1);
-					$qry .= ")";				
+					$qry .= ")";
 					$stsLegArr = $caseStatus . "-" . "";
 					$expStsLeg = explode("-", $stsLegArr);
 					if (!in_array("upd", $expStsLeg)) {
@@ -9294,9 +9293,9 @@ class RequestsController extends AppController
 					}
 				}else{
 					if (trim($caseCustomStatus) && $caseCustomStatus != "all") {
-						$qry .= ")";	
+						$qry .= ")";
 					}
-				}       
+				}
         ######### Filter by Case Types ##########
         if (trim($caseTypes) && $caseTypes != "all") {
             $qry.= $this->Format->typeFilter($caseTypes);
@@ -9363,7 +9362,7 @@ class RequestsController extends AppController
         $searchMilestone .=$qry;
         //replace starting AND with blank
 				$searchMilestone = preg_replace('/^AND/',"", trim($searchMilestone), 1);
-        if($mid || $mid == '0'){					
+        if($mid || $mid == '0'){
 					if($mid == '0'){
 						$conds = array('Easycase.istype'=>1,$clt_sql,"Easycase.isactive"=>1,"Easycase.project_id"=>$curProjId,"EasycaseMilestone.easycase_id IS NULL", $searchMilestone);
 					}else{
@@ -9372,7 +9371,7 @@ class RequestsController extends AppController
         } else {
 						$conds = array('Easycase.istype'=>1,$clt_sql,"Easycase.isactive"=>1,"Easycase.project_id"=>$curProjId, $searchMilestone);
         }
-				
+
         if($prj['Project']['status_group_id']){
             $CustomStatus = ClassRegistry::init('CustomStatus');
             $sts_cond = array('CustomStatus.status_group_id'=>$prj['Project']['status_group_id']);
@@ -9382,23 +9381,23 @@ class RequestsController extends AppController
         } else {
             $max_custom_status = "3";
         }
-				
-      //  $conditions = array($extra_wheres,$clt_sql);   
+
+      //  $conditions = array($extra_wheres,$clt_sql);
         $fields = array('Easycase.id','Easycase.uniq_id','Easycase.case_no','Easycase.case_count','Easycase.project_id','Easycase.user_id','Easycase.updated_by','Easycase.type_id','Easycase.priority','Easycase.title','Easycase.estimated_hours','Easycase.hours','Easycase.completed_task','Easycase.assign_to','Easycase.gantt_start_date','Easycase.due_date','Easycase.istype','Easycase.client_status','Easycase.format','Easycase.status','Easycase.legend','Easycase.is_recurring','Easycase.isactive','Easycase.dt_created','Easycase.actual_dt_created','Easycase.reply_type','Easycase.is_chrome_extension','Easycase.from_email','Easycase.depends','Easycase.children','Easycase.temp_est_hours','Easycase.seq_id','Easycase.parent_task_id','Easycase.story_point','Easycase.thread_count','Easycase.custom_status_id','Easycase.parent_id','User.short_name','User.name','AssignTo.short_name','AssignTo.photo','AssignTo.name','AssignTo.last_name','Project.uniq_id','Project.name','CustomStatus.*','Type.name','EasycaseFavourite.id','EasycaseFavourite.user_id'
         );
         $allCSByProj = $this->Format->getStatusByProject($curProjId);
-        $this->Easycase->bindModel(array('belongsTo' => array(                
+        $this->Easycase->bindModel(array('belongsTo' => array(
                 'User'=>array('className'=>'User','foreignKey'=>'user_id'),
                 'AssignTo'=>array('className'=>'User','foreignKey'=>'assign_to'),
                 'CustomStatus','Project','Type'
             )));
-        $orderby = trim($orderby, ' , ');				
+        $orderby = trim($orderby, ' , ');
         $options = array();
         $options['fields'] = $fields;
         $options['conditions'] = $conds;
-				
+
 				/*$offset = $casePage * $page_limit - $page_limit;
-				$limit = $page_limit;				
+				$limit = $page_limit;
 				if($viewType == ''){
 					$options['limit'] = $limit;
 					//$options['page'] = 1;
@@ -9420,12 +9419,12 @@ class RequestsController extends AppController
 
         /*$db = ConnectionManager::getDataSource('default');
         $db->showLog();*/
-				
+
 				/*echo 'Out - '.date('H:i:s:v');
         echo "<pre>";
         print_r($resCaseProj);
         exit;*/
-				
+
         /** *Manipulate results**** */
         $view = new View($this);
         $tz = $view->loadHelper('Tmzone');
@@ -9459,7 +9458,7 @@ class RequestsController extends AppController
 					 $resCaseProj[$k]['Easycase']['isFavourite'] = 0;
 					 $resCaseProj[$k]['Easycase']['favouriteColor'] = '#888888';
 					}
-        } 
+        }
 			$curCreated = $tz->GetDateTime(SES_TIMEZONE, TZ_GMT, TZ_DST, TZ_CODE, GMT_DATETIME, "datetime");
 			$friday = date('Y-m-d', strtotime($curCreated . "next Friday"));
 			$monday = date('Y-m-d', strtotime($curCreated . "next Monday"));
@@ -9478,19 +9477,19 @@ class RequestsController extends AppController
 						$customStatusByProject[$v['Project']['id']] = $v['StatusGroup']['CustomStatus'];
 					}
 				}
-			} 
-			$resultArr['defaultTaskType'] = $prj['Project']['task_type'];			
+			}
+			$resultArr['defaultTaskType'] = $prj['Project']['task_type'];
 
 			$projUser1 = array();
 			if ($projUniq) {
 				$projUser1 = array($projUniq => $this->Easycase->getMemebers($projUniq,0,0,1));
 			if(!empty($projUser1)){
 				$QTAssigns = Hash::extract($projUser1[$projUniq], '{n}.User');
-			}  
+			}
 		}
-		$resultArr['QTAssigns'] =!empty($QTAssigns)?$QTAssigns:array();    
-    
-		$resultArr['mid'] = (!empty($mid)) ? $mid : 0;  
+		$resultArr['QTAssigns'] =!empty($QTAssigns)?$QTAssigns:array();
+
+		$resultArr['mid'] = (!empty($mid)) ? $mid : 0;
 		$resultArr['resCaseProj'] = $resCaseProj;
 		$resultArr['casePage'] = $casePage;
 		$resultArr['csPage'] = $casePage;
@@ -9506,21 +9505,21 @@ class RequestsController extends AppController
 		//$resultArr['viewType'] = $viewType;
 		//$resultArr['parentId'] = $parentId;
 		$resultArr['caseCount'] = 0;
-		 
-		 
+
+
 		$resultArr['caseSrch'] = $caseSrch;
 		/*if($viewType == ''){
-			$resultArr['caseCount'] = $totalCount;		 
+			$resultArr['caseCount'] = $totalCount;
 			$pgShLbl = $frmt->pagingShowRecords($totalCount, $page_limit, $casePage);
 			$resultArr['pgShLbl'] = $pgShLbl;
 		}*/
-		 
+
 		 /*$db = ConnectionManager::getDataSource('default');
 			$db->showLog();
 			exit;*/
-		//echo 'Out - '.date('H:i:s');	
-		echo json_encode($resultArr); 
-		exit;				
+		//echo 'Out - '.date('H:i:s');
+		echo json_encode($resultArr);
+		exit;
 	}
   public function ajaXLoadTaskGroupList()
 	{
@@ -9533,11 +9532,11 @@ class RequestsController extends AppController
 		$prj = $this->Project->find("first",array("conditions"=>array("Project.uniq_id"=>$this->data['projFil'])));
 		if($prj){
 			$curProjId = $prj['Project']['id'];
-			
+
 			$searchMilestone = [];
 			if(!empty($this->data['caseSearch'])){
 				$searchMilestone['searchMilestone'] = $this->data['caseSearch'];
-			}		
+			}
 			//$milestones = $this->EasycaseMilestone->getTaskcountForTaskGroups($curProjId, $searchMilestone, $casePage, $page_limit);
 			$milestones = $this->Milestone->getMilestoneList($curProjId, $searchMilestone, $casePage, $page_limit);
 			if(!empty($milestones['taskgroups'])){
@@ -9563,7 +9562,7 @@ class RequestsController extends AppController
 						$allMilestones = array_merge($d_milestones, $milestones['taskgroups']);
 					}else{
 						$allMilestones = $milestones['taskgroups'];
-					}	
+					}
 				}else{
 					$allMilestones = $milestones['taskgroups'];
 				}
@@ -9575,7 +9574,7 @@ class RequestsController extends AppController
 		$resultArr['total'] = $milestones['total'];
 		$resultArr['page_limit'] = $page_limit;
 		$resultArr['milestones']['selected_mid'] = $this->data['selected_mid'];
-		
+
 		//custom pagination
 		$total_page = ceil($milestones['total']/$page_limit);
 		if($casePage < $total_page){
@@ -9585,7 +9584,7 @@ class RequestsController extends AppController
 			}else{
 				$resultArr['left'] = 'disable';
 				$resultArr['right'] = 'active';
-			}			
+			}
 		}else if($casePage = $total_page && $casePage > 1){
 			$resultArr['left'] = 'active';
 			$resultArr['right'] = 'disable';
@@ -9593,14 +9592,14 @@ class RequestsController extends AppController
 			$resultArr['left'] = 'disable';
 			$resultArr['right'] = 'disable';
 		}
-		
-		echo json_encode($resultArr); 
-		exit;				
+
+		echo json_encode($resultArr);
+		exit;
 	}
     public function delete_bulk_case()
     {
         $this->layout = 'ajax';
-        
+
         $id = $this->params->data['id'];
         $cno = $this->params->data['cno'];
         $pid = $this->params->data['pid'];
@@ -9625,7 +9624,7 @@ class RequestsController extends AppController
                 exit;
             }
             //$delCsTitle = $this->Easycase->getCaseTitle($pid, $cno);
-            
+
             $resArr = array();
             $resArr['parent_id'] = '';
             //$get_parent_task = $this->Easycase->getParentTask($id);
@@ -9676,7 +9675,7 @@ class RequestsController extends AppController
         $u_id = !empty($postparams['projFil']) ? $postparams['projFil'] : '';
         $this->loadModel('Project');
         $pdf_proj_name = $this->Project->find('first', array('conditions' => array('Project.uniq_id' => $u_id)));
-       
+
         if ($pdf_proj_name['Project']['status_group_id']) {
             $CustomStatus = ClassRegistry::init('CustomStatus');
             $sts_cond = array('CustomStatus.status_group_id'=>$pdf_proj_name['Project']['status_group_id']);
@@ -9769,7 +9768,7 @@ class RequestsController extends AppController
         $this->set(compact('SES_TIMEZONE', 'TZ_GMT', 'TZ_DST', 'TZ_CODE', 'GMT_DATETIME'));
         $this->render('pdfcase_taskgroups');
     }
-    
+
     public function getUserTaskList()
     {
         $this->layout = 'ajax';
@@ -9778,7 +9777,7 @@ class RequestsController extends AppController
         $uniqid = $this->params->data['proj_uniq_id'];
         $search_qry = $this->params->data['search_query'];
         $quickMem = $this->Easycase->getMembersAndTask($uniqid, SES_COMP, $search_qry);
-        
+
         $result = $quickMem;
         echo json_encode($result);
         exit;
@@ -9786,14 +9785,14 @@ class RequestsController extends AppController
     public function ajaxMentionEmail($oauth_arg = null)
     {
         $oauth_return = 0;
-        
+
         $data = $this->data;
 
         $getEmailUser = $this->getAllExistingNotifyUser($data['projId'], $data['emailUser'], 'mention_case');
         if ($getEmailUser) {
             $this->Postcase->mailToMentionUser($data, $getEmailUser);
         }
-        
+
         echo 1;
         exit;
     }

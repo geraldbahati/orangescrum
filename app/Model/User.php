@@ -17,13 +17,13 @@ class User extends AppModel {
 
     function afterSave($created) {
 	    if($created) {
-	      $Menu = ClassRegistry::init('Menu');  
-	      $UserMenu = ClassRegistry::init('UserMenu'); 
-	      $Menu->Behaviors->enable('Tree'); 
+	      $Menu = ClassRegistry::init('Menu');
+	      $UserMenu = ClassRegistry::init('UserMenu');
+	      $Menu->Behaviors->enable('Tree');
 	      $getAllMenus = $Menu->find('threaded',array('conditions'=>array('Menu.default_menu'=>1),'fields'=>array('Menu.id','Menu.parent_id'),'order'=>array('Menu.menu_order'=>'ASC')));
 	      $ga = array();
 	      foreach($getAllMenus as $k=>$v){
-	      	$ga[$k]['id'] =$v['Menu']['id']; 
+	      	$ga[$k]['id'] =$v['Menu']['id'];
 	      	if(!empty($v['children'])){
 	      		foreach($v['children'] as $k1=>$v1){
 	      			$ga[$k]['children'][$k1]['id'] = $v1['Menu']['id'];
@@ -56,7 +56,7 @@ class User extends AppModel {
         }
     }
 
-    
+
 	public function readUserDetlfromCache($user_id) {
         //Cache::delete('prrofile_detl_'.$user_id);
 		if (($prof_detl = Cache::read('prrofile_detl_'.$user_id)) === false) {
@@ -74,7 +74,7 @@ class User extends AppModel {
 		if(!empty($user_data) && date('Y-m-d', strtotime($user_data['User']['created'])) != date('Y-m-d')){
 			return true;
 		}
-		
+
 		return false;
 	}
 	function validateProfinpt($dta=null){
@@ -92,22 +92,22 @@ class User extends AppModel {
 	 * @author Andola Dev <support@andolacrm.com>
 	 */
 	public function readKeepHoverfromCache($user_id=0, $chk=0) {
-		//Cache::delete('sub_detl_'.$comp_id);	
+		//Cache::delete('sub_detl_'.$comp_id);
 		if(!empty($chk)){
 			Cache::delete('KEEP_HOVER_EFFECT_'.$user_id);
 		}
 		if ((Cache::read('KEEP_HOVER_EFFECT_'.$user_id)) === false) {
 			$data_hov = $this->find('first', array('conditions' => array('User.id' => $user_id), 'fields' => array('User.keep_hover_effect'), 'order' => 'id DESC'));
 			Cache::write('KEEP_HOVER_EFFECT_'.$user_id, $data_hov['User']['keep_hover_effect']);
-		}	
+		}
 		return Cache::read('KEEP_HOVER_EFFECT_'.$user_id);
 	}
-	function getDatecnt($f_d, $t_d, $typ){	
+	function getDatecnt($f_d, $t_d, $typ){
 		if($f_d < $t_d){
-			$datetime1 = date_create($f_d); 
+			$datetime1 = date_create($f_d);
 			$datetime2 = date_create($t_d);
-			// calculates the difference between DateTime objects 
-			$interval = date_diff($datetime1, $datetime2); 
+			// calculates the difference between DateTime objects
+			$interval = date_diff($datetime1, $datetime2);
 			$cnt = $interval->format('%a');
 			if($cnt > 30 && $typ == 1){
 				$cnt = 30;
@@ -117,14 +117,14 @@ class User extends AppModel {
 			return $cnt;
 		}else{
 			return 0;
-		}		
+		}
 	}
-	
+
 	function getProrateAmt($sub_dtl, $sub_orig, $next_sub, $bil_type=1){
-		$today = date('Y-m-d', strtotime(GMT_DATETIME));	
+		$today = date('Y-m-d', strtotime(GMT_DATETIME));
 		$plans_month = Configure::read('CURRENT_MONTHLY_PLANS');
 		$plans_yr = Configure::read('CURRENT_YEALY_PLANS');
-		$next_bill = $sub_dtl->nextBillingDate->format('Y-m-d');	
+		$next_bill = $sub_dtl->nextBillingDate->format('Y-m-d');
 		//$next_bill = '2019-01-30';
 		$amt = 0;
 		if($today < $next_bill){
@@ -199,7 +199,7 @@ class User extends AppModel {
 				$CompanyUser_mod->recursive = -1;
 				$getCompId = $CompanyUser_mod->find('first', array('conditions' => array('CompanyUser.user_id' => $uid, 'CompanyUser.is_active' => 1), 'fields' => array('CompanyUser.company_uniq_id')));
 				if(empty($getCompId)){
-					$_SESSION['OS_OUTER_SIGN_EMAIL'] = $uRse['User']['uniq_id'];					
+					$_SESSION['OS_OUTER_SIGN_EMAIL'] = $uRse['User']['uniq_id'];
 				}else{
 					unset($_SESSION['OS_OUTER_SIGN_EMAIL']);
 					$_SESSION['OS_OUTER_SIGN_COMP'] = $getCompId['CompanyUser']['company_uniq_id'];
@@ -218,17 +218,17 @@ class User extends AppModel {
 	}
 	function getUnsubscribeLink($comp_id, $email) {
         $this->recursive = -1;
-        $userDtllink = $this->getUserFields(array('User.email' => $email), array('User.id','User.uniq_id'));		
+        $userDtllink = $this->getUserFields(array('User.email' => $email), array('User.id','User.uniq_id'));
 		$ht_tp =  (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? "https://" : "http://";
 		$Company = ClassRegistry::init('Company');
 		$comp_dtl = $Company->find('first', array('conditions' => array('Company.id' => $comp_id), 'fields' => array('Company.seo_url')));
-		
+
 		if(stristr(DOMAIN_COOKIE, 'orangescrum.com')){
 			$ht_tp .= $comp_dtl['Company']['seo_url'].DOMAIN_COOKIE.'/';
 		}else{
 			$ht_tp .= $comp_dtl['Company']['seo_url'].'.'.DOMAIN_COOKIE.'/';
 		}
-		return $ht_tp.'unsubscribe/'.$userDtllink['User']['uniq_id'];		
+		return $ht_tp.'unsubscribe/'.$userDtllink['User']['uniq_id'];
     }
 	function getUserNames($uids) {
 		if (stristr($uids, ",")) {
@@ -296,7 +296,7 @@ class User extends AppModel {
 			return array('userlist'=>$userlist,'index'=>$selected_user_index);
 		//echo "<pre>";print_r($userlist);exit;
 	}
-	
+
     function formatActivities($activity, $total, $fmt, $dt, $tz, $csq, $related_tasks = array(), $flg=0) {
         if ($total) {
             App::import('Component', 'Format');
@@ -327,8 +327,8 @@ class User extends AppModel {
             }
             $dateCurnt = $tz->GetDateTime(SES_TIMEZONE, TZ_GMT, TZ_DST, TZ_CODE, GMT_DATETIME, "date");
 			$csts_arr = array();
-			//custom status ref for other pages			
-			$sts_ids = array_filter(array_unique(Hash::extract($activity, '{n}.Easycase.custom_status_id')));			
+			//custom status ref for other pages
+			$sts_ids = array_filter(array_unique(Hash::extract($activity, '{n}.Easycase.custom_status_id')));
 			if($sts_ids){
 				$Csts = ClassRegistry::init('CustomStatus');
 				$csts_arr = $Csts->find('all',array('conditions'=>array('CustomStatus.id'=>$sts_ids)));
@@ -383,7 +383,7 @@ class User extends AppModel {
                 // pr($reqTitles[$v['Easycase']['case_no'] . '_' . $v['Easycase']['project_id']]['uid']);exit;
                 $fun = "activityDetail('".$reqTitles[$v['Easycase']['case_no'] . "_" . $v['Easycase']['project_id']]['uid']."', 'case', '0', 'popup')";
                 //$frmt_title_data = $fmt->showSubtaskTitle($frmt_title_data, $id, $related_tasks, 1, $activity[$k]['Easycase']);
-				
+
                 $eTitle = '<a href="javascript:void(0);"  onclick="'.$fun.';" >#' . $activity[$k]['Easycase']['case_no'] . ": " . $frmt_title_data . '</a>';
 				//$eTitle = $frmt_title_data;
                 // pr($eTitle);exit;
@@ -516,7 +516,7 @@ class User extends AppModel {
 							if($flg){
 								$new_mesg .= $new_text;
 							}
-                        } elseif ($caseReplyType == 6) {                           
+                        } elseif ($caseReplyType == 6) {
                             $msg = ' <span class="col-wip">'.__('Updated',true).' </span><span class="fnt_clr_gry">'.__('task progress on ',true).'</span> <p>' . $eTitle . ' </p><span class="fnt_clr_gry">'.__('to',true).' <b>' . $v['Easycase']['completed_task'] . '%</b></span>';
 
                             $new_mesg = '<span class="col-wip"><b>'.__('Updated',true).'</b> </span>';
@@ -646,12 +646,12 @@ class User extends AppModel {
         }
 
         $over_milestone = "SELECT  `Easycase`.case_no,`Easycase`.dt_created,`Easycase`.uniq_id,`Easycase`.project_id,`Easycase`.due_date,
-		    `Easycase`.title, `User`.name FROM `easycases` AS `Easycase` inner JOIN  project_users AS `ProjectUser` 
-		    ON (`Easycase`.`project_id` = `ProjectUser`.`project_id`) inner JOIN `users` AS `User` 
-		    ON(`Easycase`.`user_id` = `User`.`id` AND `Easycase`.`due_date` < '" . $today . "' AND  `Easycase`.`due_date`!= '0000-00-00 00:00:00' 
-		    AND `Easycase`.`due_date`!= 'NULL' AND Easycase.isactive='1' AND `Easycase`.istype ='1' AND Easycase.title !='' " . $cond . "
-		    AND `Easycase`.legend !='3' AND `Easycase`.legend !='5') inner JOIN `projects` AS `Project` 
-		    ON(`ProjectUser`.`project_id`=`Project`.`id` AND `Project`.`isactive`='1') WHERE `ProjectUser`.`user_id` = '" . SES_ID . "' 
+		    `Easycase`.title, `User`.name FROM `easycases` AS `Easycase` inner JOIN  project_users AS `ProjectUser`
+		    ON (`Easycase`.`project_id` = `ProjectUser`.`project_id`) inner JOIN `users` AS `User`
+		    ON(`Easycase`.`user_id` = `User`.`id` AND `Easycase`.`due_date` < '" . $today . "' AND DAYNAME(`Easycase`.`due_date`) IS NOT NULL
+		     AND Easycase.isactive='1' AND `Easycase`.istype ='1' AND Easycase.title !='' " . $cond . "
+		    AND `Easycase`.legend !='3' AND `Easycase`.legend !='5') inner JOIN `projects` AS `Project`
+		    ON(`ProjectUser`.`project_id`=`Project`.`id` AND `Project`.`isactive`='1') WHERE `ProjectUser`.`user_id` = '" . SES_ID . "'
 		    AND " . $clt_sql . " AND `ProjectUser`.`company_id` = '" . SES_COMP . "' " . $qry . " order by `Easycase`.due_date DESC LIMIT 0,5";
         $overdue = $Easycase->query($over_milestone);
 
@@ -687,11 +687,11 @@ class User extends AppModel {
         if (CakeSession::read("Auth.User.is_client") == 1) {
             $clt_sql = "((Easycase.client_status = " . CakeSession::read("Auth.User.is_client") . " AND Easycase.user_id = " . CakeSession::read("Auth.User.id") . ") OR Easycase.client_status != " . CakeSession::read("Auth.User.is_client") . ")";
         }
-        $next_milestone = "SELECT  `Easycase`.case_no,`Easycase`.dt_created,`Easycase`.uniq_id,`Easycase`.project_id,`Easycase`.due_date, 
-		    `Easycase`.title, `User`.name, `Project`.name, `Project`.uniq_id FROM `easycases` AS `Easycase` inner JOIN  project_users AS `ProjectUser` 
+        $next_milestone = "SELECT  `Easycase`.case_no,`Easycase`.dt_created,`Easycase`.uniq_id,`Easycase`.project_id,`Easycase`.due_date,
+		    `Easycase`.title, `User`.name, `Project`.name, `Project`.uniq_id FROM `easycases` AS `Easycase` inner JOIN  project_users AS `ProjectUser`
 		    ON (`Easycase`.`project_id` = `ProjectUser`.`project_id`) inner JOIN `users` AS `User`
 		    ON(`Easycase`.`user_id` = `User`.`id` AND `Easycase`.`due_date` >= '" . $today . "' AND Easycase.isactive='1'
-		    AND `Easycase`.istype ='1' AND Easycase.title !='' " . $cond . ") inner JOIN `projects` AS `Project` ON(`ProjectUser`.`project_id`=`Project`.`id` 
+		    AND `Easycase`.istype ='1' AND Easycase.title !='' " . $cond . ") inner JOIN `projects` AS `Project` ON(`ProjectUser`.`project_id`=`Project`.`id`
 		    AND `Project`.`isactive`='1') WHERE `ProjectUser`.`user_id` = '" . SES_ID . "' AND " . $clt_sql . " AND `ProjectUser`.`company_id` = '" . SES_COMP . "'
 		    " . $qry . " order by `Easycase`.due_date ASC LIMIT 0,$limit";
         $upcoming = $Easycase->query($next_milestone);
@@ -764,7 +764,7 @@ class User extends AppModel {
     /**
      * @Method: Public validate_emailurl($data=array()) Check email and URL existance with our db
      * @author GDR <abc@mydomain.com>
-     * @return array 
+     * @return array
      */
     function validate_emailurl($data = array()) {
         $this->recursive = -1;
@@ -832,7 +832,7 @@ class User extends AppModel {
     /**
      * @Method: Public keepPassChk($uid) Check users logged in different browsers and logged out if some one changes the password
      * @author PRB <abc@mydomain.com>
-     * @return array 
+     * @return array
      */
     function keepPassChk($uid) {
         App::import('Model', 'OsSessionLog');
@@ -964,7 +964,7 @@ class User extends AppModel {
                 setcookie('LAST_CREATED_PROJ', $prjid, time() + 3600, '/', DOMAIN_COOKIE, false, false);
                 //if(!isset($_COOKIE['TASKGROUPBY_DBDT'])){
                 //setcookie('TASKGROUPBY_DBD', 'active', COOKIE_REM, '/', DOMAIN_COOKIE, false, false);
-                //setcookie('TASKGROUPBY_DBDT', 'active', COOKIE_REM, '/', DOMAIN_COOKIE, false, false);	
+                //setcookie('TASKGROUPBY_DBDT', 'active', COOKIE_REM, '/', DOMAIN_COOKIE, false, false);
                 //}
                 /* $CompanyUser = ClassRegistry::init('CompanyUser');
                   $checkMem = $CompanyUser->find('all', array('conditions' => array('CompanyUser.company_id' => $comp_id, 'CompanyUser.is_active' => 1)));
@@ -1203,7 +1203,7 @@ class User extends AppModel {
             $json_arr['email'] = $userinfo['User']['email'];
             $json_arr['date'] = GMT_DATETIME;
             $Postcase->eventLog(SES_COMP, SES_ID, $json_arr, 20);
-            //End 
+            //End
             $invo_file_name = "OrangeScrum_Invoice_" . $tdata['Transactions']['invoice_id'] . ".pdf";
             // Invoice mail on instant payment
             exec(PDF_LIB_PATH . " " . HTTP_ROOT . "users/instantinvoice/subscriptionId:" . $user_sub['UserSubscription']['btsubscription_id'] . "/transactionId:" . $ltid . " " . DIR_IMAGES . "pdf/" . $invo_file_name);
@@ -1214,8 +1214,8 @@ class User extends AppModel {
                         <tr><td align='left' style='font-family:Arial;font-size:14px;'>Thank you for being a customer.</b></td></tr>
                         <tr><td align='left' style='font-family:Arial;font-size:14px;'>&nbsp;</td></tr>
                         <tr><td align='left' style='font-family:Arial;font-size:14px;'>Please find the attached invoice <b>" . $invo_file_name . "</b></td></tr>
-                        <tr><td align='left' style='font-family:Arial;font-size:14px;'>&nbsp;</td></tr>	   
-                        <tr><td align='left' style='font-family:Arial;font-size:14px;'>This is your receipt of payment against your credit card on cancellation of account an amount of <b>$" . $cal_amt . "</b> </td></tr>	   
+                        <tr><td align='left' style='font-family:Arial;font-size:14px;'>&nbsp;</td></tr>
+                        <tr><td align='left' style='font-family:Arial;font-size:14px;'>This is your receipt of payment against your credit card on cancellation of account an amount of <b>$" . $cal_amt . "</b> </td></tr>
                         <tr><td align='left' style='font-family:Arial;font-size:14px;'>Thank you</td></tr>
                         <tr><td align='left' style='font-family:Arial;font-size:14px;'>&nbsp;</td></tr>
                         <tr height='25px'><td>&nbsp;</td></tr>
@@ -1307,13 +1307,13 @@ class User extends AppModel {
 						if(isset($user["User"]["photo"]) && !empty($user["User"]["photo"])) {
 							if (defined('USE_S3') &&  USE_S3) {
 								$img_url = $http_url.$getComps[0]['Company']['seo_url'].USE_IMAGE_URL.'/users/image_thumb/?type=photos&file='.$user['User']['photo'].'&sizex=100&sizey=100&quality=100';
-							}else{						
+							}else{
 								$img_url = $http_url.$getComps[0]['Company']['seo_url'].USE_IMAGE_URL.'/users/image_thumb/?type=photos&file='.$user['User']['photo'].'&sizex=100&sizey=100&quality=100';
 							}
 						}
 						}
 					$ret['photo'] = $img_url;
-					
+
 					}else{
 						$ret['code'] = 2006;
 						$ret['status'] = "failure";
@@ -1328,7 +1328,7 @@ class User extends AppModel {
 			$ret['code'] = 2003;
 			$ret['status'] = "failure";
 			$ret['msg'] = __("Auth token is invalid!");
-		}	
+		}
 		return $ret;
 	}
 
@@ -1397,7 +1397,7 @@ class User extends AppModel {
         if ($in_data['User']['id']) {
             $uArray['User']['id'] = $in_data['User']['id'];
         } else {
-            // no user	
+            // no user
         }
 		$this->create();
         if ($more) {
@@ -1463,7 +1463,7 @@ class User extends AppModel {
             }
         }
         return $UID . '___' . $pass;
-    }	
+    }
 	function mobileCheckUserExists($emails = null, $company_id) {
         $this->recursive = -1;
         if ($emails) {
@@ -1476,7 +1476,7 @@ class User extends AppModel {
             if (!empty($mail_arr1)) {
                 $str = "";
                 $CompanyUser = ClassRegistry::init('CompanyUser');
-                $UserInvitation = ClassRegistry::init('UserInvitation');                
+                $UserInvitation = ClassRegistry::init('UserInvitation');
                 $cnt = 0;
                 $mail_arr = array();
                 foreach ($mail_arr1 AS $key => $val) {
@@ -1485,7 +1485,7 @@ class User extends AppModel {
                         $mail_arr[] = $val;
                     }
                 }
-                //Checking limitation of users 
+                //Checking limitation of users
                 for ($i = 0; $i < count($mail_arr); $i++) {
                     if (trim($mail_arr[$i]) != "") {
                         $mail_arr[$i] = trim($mail_arr[$i]);
@@ -1535,7 +1535,7 @@ class User extends AppModel {
 						$ret_arr['message'] = 'We found ('.$oseml. ') emails already registered with Orangescrum, please choose another!';
 					}else{
 						$ret_arr['status'] = 'success';
-					}					
+					}
 				}
 			} else if(isset($data_inpt['type']) && $data_inpt['type'] != 'e'){
 				$ret_arr['status'] = 'success';
@@ -1544,14 +1544,14 @@ class User extends AppModel {
 		return $ret_arr;
 	}
 	function addDummyUser($proj_id, $comp_id, $user_id, $comp_uid){
-		
+
 		$dumy_users = $this->find('all', array('conditions' => array('User.is_dummy' => 1), 'fields' => array('User.id ','User.name','User.uniq_id'),'order'=>array('User.id'=>'DESC')));
-		
+
 		$CompanyUser_mod = ClassRegistry::init('CompanyUser');
-		$ProjectUser_mod = ClassRegistry::init('ProjectUser');	
+		$ProjectUser_mod = ClassRegistry::init('ProjectUser');
 		$utyp_arr = array(0=>2,1=>3,2=>4); //user role
-		
-		foreach($dumy_users as $k => $v){			
+
+		foreach($dumy_users as $k => $v){
 			//company users
 			$comp_usr = array();
 			$comp_usr['CompanyUser']['user_id'] = $v['User']['id'];
@@ -1563,17 +1563,17 @@ class User extends AppModel {
 				$comp_usr['CompanyUser']['is_client'] = 1;
 			}else{
 				$comp_usr['CompanyUser']['is_client'] = 0;
-			}			
+			}
 			$comp_usr['CompanyUser']['role_id'] = $utyp_arr[$k];
 			$comp_usr['CompanyUser']['is_dummy'] = 1;
 			$CompanyUser_mod->saveAll($comp_usr);
-			
-			//project users 
-			
+
+			//project users
+
 			$ProjectUser_mod->recursive = -1;
 			$getLastId = $ProjectUser_mod->find('first', array('fields' => array('ProjectUser.id'), 'order' => array('ProjectUser.id DESC')));
 			$lastid = $getLastId['ProjectUser']['id'] + 1;
-			
+
 			$ProjUsr = array();
 			$ProjUsr['ProjectUser']['id'] = $lastid;
 			$ProjUsr['ProjectUser']['project_id'] = $proj_id;
@@ -1582,7 +1582,7 @@ class User extends AppModel {
 			$ProjUsr['ProjectUser']['default_email'] = 1;
 			$ProjUsr['ProjectUser']['istype'] = 2;
 			$ProjUsr['ProjectUser']['dt_visited'] = GMT_DATETIME;
-			$ProjectUser_mod->saveAll($ProjUsr);			
+			$ProjectUser_mod->saveAll($ProjUsr);
 		}
 		return $dumy_users;
 	}
@@ -1590,7 +1590,7 @@ class User extends AppModel {
         if ($total) {
             App::import('Component', 'Format');
             $format = new FormatComponent(new ComponentCollection);
-            
+
             $dateCurnt = $tz->GetDateTime(SES_TIMEZONE, TZ_GMT, TZ_DST, TZ_CODE, GMT_DATETIME, "date");
             foreach ($activity as $k => $v) {
                 $updated = $tz->GetDateTime(SES_TIMEZONE, TZ_GMT, TZ_DST, TZ_CODE, $v['EasycaseMention']['created'], "datetime");
@@ -1617,7 +1617,7 @@ class User extends AppModel {
                 $frmt_title_data = $fmt->formatTitle($fmt->convert_ascii($fmt->longstringwrap($frmt_title_data)));
 
                 //$frmt_title_data = $fmt->showSubtaskTitle($frmt_title_data, $id, $related_tasks, 1, $activity[$k]['Easycase']);
-				
+
                 $eTitle = '<a href="javascript:void(0);" class="mention-task-dtls" data-uniqid="'.$activity[$k]['Easycase']['uniq_id'].'">#' . $v['Easycase']['case_no'] . ": " . $frmt_title_data . '</a>';
 				//$eTitle = $frmt_title_data;
                 $activity[$k]['Easycase']['title_data'] = $eTitle;
@@ -1640,12 +1640,12 @@ class User extends AppModel {
                         } else{
                             $mntn_by = __("by Me");
                         }
-                       
+
                     } else {
                         $mntn_by = __("by")." ".$activity[$k]['MentionedByUser']['full_name'];
                     }
                     $new_mesg = '<span class="col-crt"><b>'.$mntn_user.' '.$mntn_typ.' '.$mntn_by .'</b></span>';
-					
+
 						$new_mesg .= '<p>' . $eTitle . '</p>';
                   //  $new_text = $eTitle;
                 $activity[$k]['EasycaseMention']['msg'] = $activity[$k]['EasycaseMention']['mention_message'];
@@ -1689,7 +1689,7 @@ class User extends AppModel {
                 return "excess";
             }else{
                 return "allowed";
-            }           
+            }
         } else {
             return "allowed";
         }

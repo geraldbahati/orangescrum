@@ -189,8 +189,8 @@
 				</div>
 				<?php }  ?>
 				<div class="<?php if($projtype !== 'active-grid') { ?> col-lg-3 col-sm-3  <?php  } else{ ?> col-lg-4 col-sm-4 <?php  } ?>">
-					<div id="tour_proj_view" class="fr pfl-icon-dv gidview-proj-menu">	
-				<?php  if($projtype !== 'active-grid') { ?>					
+					<div id="tour_proj_view" class="fr pfl-icon-dv gidview-proj-menu">
+				<?php  if($projtype !== 'active-grid') { ?>
 					<span class="dropdown cursor">
 						<a class="dropdown-toggle" data-toggle="dropdown"  data-target="#" rel="tooltip" title="<?php echo __('Filter');?>">
 						<i class="glyphicon glyphicon-filter" style="top:3px;"></i>
@@ -203,7 +203,7 @@
 								<ul class="dropdown-menu" id="dropdown_menu_project_type" style="max-height: 200px;overflow-y: scroll;margin-right:160px;"></ul>
 								</div>
 						</li> -->
-						
+
 						<li class="drop_menu_mc dropdown">
 							<a href="javascript:void(0)" class="dropdown-toggle"  data-target="#" data-toggle="dropdown" onclick="project_allfiltervalue('project_status');"><i class="material-icons">&#xE88B;</i><?php echo __('Project Status');?></a>
 							<div class="dropdown_status" id="dropdown_menu_project_status_div">
@@ -266,7 +266,7 @@
 								<i class="material-icons">&#xE42A;</i>
 							</a>
 						</span>
-						
+
 						<?php if(IS_SKINNY){ ?>
 						<span>
 							<a href="javascript:void(0);" onclick="setDefaultProjectView('<?php echo $cookie_value; ?>');
@@ -331,51 +331,9 @@
 							<span class="counter">(<?php echo $active_user_cnt; ?>)</span></span>
 						</a>
 					</li>
-					<li id="tour_invt_user" <?php if ($role == 'invited') { ?>class="active-list"
-						<?php } ?> onclick="filterUserRole('invited',
-						'<?php echo $user_srch; ?>');">
-						<a href="javascript:void(0)">
-							<i class="material-icons">&#xE7FE;</i>
-							<?php echo __('Invited');?>
-							<span class="counter">(<?php echo $invited_user_cnt; ?>)</span>
-						</a>
-					</li>
-					<li id="tour_disbl_user" <?php if ($role == 'disable') { ?>class="active-list"
-						<?php } ?> onclick="filterUserRole('disable',
-						'<?php echo $user_srch; ?>');">
-						<a href="javascript:void)(0)">
-							<i class="material-icons">&#xE909;</i>
-							<?php echo __('Disabled');?>
-							<span class="counter">(<?php echo $disabled_user_cnt; ?>)</span>
-						</a>
-					</li>
-					<li class="recent-icon <?php if ($role == 'recent') { ?>active-list<?php } ?>"
-						onclick="filterUserRole('recent', '<?php echo $user_srch; ?>');">
-						<a href="javascript:void)(0)">
-							<i class="material-icons">&#xE8B3;</i>
-							<?php echo __('Recent');?>
-							<span class="counter">(<?php echo $recent_user_cnt; ?>)</span>
-						</a>
-					</li>
-					<li id="tour_clint_user" <?php if ($role == 'client') { ?>class="active-list"
-						<?php } ?> onclick="filterUserRole('client',
-						'<?php echo $user_srch; ?>');">
-						<a href="javascript:void)(0)">
-							<i class="material-icons">&#xE7FB;</i>
-							<?php echo __('Client');?>
-							<span class="counter">(<?php
-                                if ($client_user_cnt == 0) {
-                                    echo '0';
-                                } else {
-                                    echo $client_user_cnt;
-                                }
-                            ?>)
-							</span>
-						</a>
-					</li>
 				</ul>
 			</div>
-			
+
 		</div>
 	</div>
 </div>
@@ -424,8 +382,8 @@
 							</a>
 						</li>
 						<?php } ?>
-						
-						
+
+
 					</ul>
 					<div class="cb"></div>
 				</div>
@@ -1747,7 +1705,7 @@
 									href="<?php echo HTTP_ROOT . 'dashboard#/timelog'; ?>"><i
 										class="material-icons">&#xE8EF;</i>&nbsp;<?php echo __('List View');?></a>
 							</li>
-							
+
 						</ul>
 						<div class="cb"></div>
 					</div>
@@ -1762,7 +1720,7 @@
 									href="<?php echo HTTP_ROOT.'dashboard#/timelog';?>"><i
 										class="material-icons">&#xE8EF;</i>&nbsp;<?php echo __('List View');?></a>
 							</li>
-							
+
 						</ul>
 						<div class="cb"></div>
 					</div>

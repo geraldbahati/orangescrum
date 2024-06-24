@@ -187,21 +187,6 @@
                                     <li class="assgnremoveme<?php echo $prjArr['Project']['uniq_id']; ?>" onclick="trackEventLeadTracker('Project Card Page','Add Me','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');"><a href="javascript:void(0);"  data-prj-uid ="<?php echo $prjArr['Project']['uniq_id']; ?>" data-prj-id="<?php echo $prjArr['Project']['id']; ?>" data-prj-name="<?php echo $this->Format->formatTitle($prj_name); ?>" data-prj-usr="<?php echo SES_ID; ?>" onclick="assignMeToPrj(this);"><i class="account-plus"></i><i class="material-icons">&#xE147;</i> <?php echo __('Add me here');?></a></li>
                                 <?php } ?>
 								<?php } ?>
-                                <?php if($this->Format->isAllowed('Add Users to Project',$roleAccess)){ ?>
-                                    <li onclick="trackEventLeadTracker('Project Card Page','Add User','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');"><a href="javascript:void(0);" class="icon-add-usr" data-prj-uid ="<?php echo $prjArr['Project']['uniq_id']; ?>" data-prj-id="<?php echo $prjArr['Project']['id']; ?>" data-prj-name="<?php echo $this->Format->formatTitle($prj_name); ?>" data-prj-usr="<?php echo $prjArr['Project']['user_id']; ?>"><i class="material-icons">&#xE147;</i> <?php echo __('Add User');?></a></li>
-                                <?php } ?>
-                                    <li id="remove<?php echo $prjArr['Project']['id']; ?>" onclick="trackEventLeadTracker('Project Card Page','Remove User','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');">
-                                    <?php if (!empty($prjArr[0]['totusers'])) { ?>
-                                        <?php if($this->Format->isAllowed('Remove Users from Project',$roleAccess)){ ?>
-                                        <a href="javascript:void(0);" class="icon-remove-usr" data-prj-id="<?php echo $prjArr['Project']['id']; ?>" data-prj-uid="<?php echo $prjArr['Project']['uniq_id']; ?>" data-prj-name="<?php echo $this->Format->formatTitle($prj_name); ?>"><i class="material-icons">&#xE15C;</i> <?php echo __('Remove User');?></a>
-                                    <?php } ?>
-                                    <?php } ?>
-                                    </li>
-                                    <?php if($this->Format->isAllowed('Remove Users from Project',$roleAccess)){ ?>
-                                    <li id="ajax_remove<?php echo $prjArr['Project']['id']; ?>" style="display:none;" onclick="trackEventLeadTracker('Project Card Page','Remove User','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');">
-                                        <a href="javascript:void(0);" class="icon-remove-usr" data-prj-id="<?php echo $prjArr['Project']['id']; ?>" data-prj-uid="<?php echo $prjArr['Project']['uniq_id']; ?>" data-prj-name="<?php echo $this->Format->formatTitle($prj_name); ?>"><i class="material-icons">&#xE15C;</i> <?php echo __('Remove User');?></a>
-                                    </li>
-                                  <?php } ?>																
                                     <?php if($this->Format->isAllowed('Edit Project',$roleAccess)){ ?>
                                     <li onclick="trackEventLeadTracker('Project Card Page','Edit Project','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');"><a href="javascript:void(0);" class="icon-edit-usr " data-prj-id="<?php echo $prjArr['Project']['uniq_id']; ?>" data-prj-uid="<?php echo $prjArr['Project']['uniq_id']; ?>" data-prj-name="<?php echo $this->Format->formatTitle($prj_name); ?>"><i class="material-icons">&#xE254;</i> <?php echo __('Edit');?></a></li>
                                     <?php } ?>

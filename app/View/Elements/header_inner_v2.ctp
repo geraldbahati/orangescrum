@@ -9,13 +9,13 @@
 	.coupon-hello-bar a{ text-decoration:none;}
 	.coupon-hello-bar a:hover{ text-decoration:none;}
 	.coupon-hello-bar a:hover span{ color:#436089;border-color:#436089;}
-	.coupon-hello-bar span {border:1px dashed #fff; color:#fff;padding:3px 5px;font-weight:600;} 
+	.coupon-hello-bar span {border:1px dashed #fff; color:#fff;padding:3px 5px;font-weight:600;}
 	.coupon-hello-bar .v-seperator{width:2px;height:18px;background: #fff; margin:0 5px; display:inline-block; vertical-align: middle;}
 	.tandc {text-align: center;margin-top: -8px;color: #333;font-weight: 600; font-size: 11px;font-style: italic;text-align:center;}
 	.navbar .profile-bar > li > a.quick_link_ellip{display: block;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;}
 	.custom-navbar.nav_inr_menu .right_pfl_menu .left_trial{margin-right: 15px;}
 
-	
+
 	.nav.navbar-nav .btn.btn_cmn_efect.cmn_bg.btn-info,.custom-navbar.nav_inr_menu .right_pfl_menu .quick_link_btn,.right_pfl_menu .btn.btn_cmn_efect.cmn_bg.btn-info.upgrd_btn{padding: 6px 15px;width: auto;border-radius: 20px;}
 	.custom-navbar.nav_inr_menu .right_pfl_menu .profile-bar > li{padding: 5px 15px;}
 	.custom-navbar.nav_inr_menu .right_pfl_menu .quick_tour a{position:static}
@@ -30,12 +30,12 @@
 	.custom-navbar.nav_inr_menu .right_pfl_menu .profile-bar > li.upgrade_plan_li .upgrd_btn{ border-radius: 4px;
     padding: 4px 10px;top:0}
 
-	
-	
+
+
 	<?php if(isset($showExtraCoupon) && $showExtraCoupon ==1 && SES_TYPE==1 && CONTROLLER != 'ganttchart' && 0){ ?>
 		.custom-navbar{top:50px;}
 		.left-menu-panel .side-nav,.task-list-bar{top:100px;}
-		.rht_content_cmn.task_lis_page .wrapper, .wrapper.pad_top_fbar {padding-top:174px;} 
+		.rht_content_cmn.task_lis_page .wrapper, .wrapper.pad_top_fbar {padding-top:174px;}
 	<?php } ?>
 </style>
 <div class="rt_tutorial"><a href="<?php echo HTTP_ROOT_LIVE.'help';?>" target="_blank">&nbsp;</a></div>
@@ -47,12 +47,12 @@
 <?php
 	$popular_plans=Configure::read('POPULAR_PLANS');
 	$projUniq1 = "";
-	
+
 	$priving_arr_fun = array("subscription","transaction", "creditcard","account_activity","pricing",'upgrade_member','account_usages','downgrade','edit_creditcard','confirmationPage','defect_severity','defect_category','defect_issue_type','defect_activity_type','defect_phase', 'defect_root_cause', 'defect_fix_version', 'defect_affect_version', 'defect_origin', 'defect_resolution');
-	
+
 	//print $projUniq.'--'.$is_active_proj;
 	//echo "<pre>";print_r($getallproj);exit;
-	
+
 	if(count($getallproj) >= 1) {
 		$projUniq1 = $getallproj['0']['Project']['uniq_id'];
 	}
@@ -68,13 +68,13 @@
 		}
     setcookie('CPUID', $projUniq, COOKIE_REM, '/', DOMAIN_COOKIE, false, false);
 	?>
-	
+
 	<input type="hidden" name="projFil" id="projFil" value="<?php echo $projUniq; ?>" size="24" readonly="true"/>
 	<input type="hidden" name="projMethType" id="projMethType" value="<?php echo $_SESSION['project_methodology']; ?>" size="24" readonly="true"/>
 	<input type="hidden" id="company_trial_expire" value="<?php echo $user_subscription['trial_expired']; ?>" readonly="true"/>
-	
+
 	<input type="hidden" name="projIsChange" id="projIsChange" value="<?php echo $projUniq; ?>" size="24" readonly="true"/>
-	
+
 	<input type="hidden" name="CS_project_id" id="CS_project_id" value="<?php if(isset($ctProjUniq)) { echo $ctProjUniq; } ?>" size="24" readonly="true"/>
 	<input type="hidden" id="CS_assign_to" value="<?php echo SES_ID; ?>">
 	<input type="hidden" id="own_session_id" value="<?php echo SES_ID; ?>">
@@ -117,10 +117,10 @@
 			</div>
 			<?php $men_col_class = $theme_settings['navbar_color'] == "gradient-45deg-white" ? " "."cmn_white_bg"." ".$theme_settings['navbar_color']." gradient-shadow" : ' '.$theme_settings['navbar_color'].' gradient-shadow';?>
 			<?php $col_class = $theme_settings['navbar_color'];?>
-			<div class="navbar-collapse collapse navbar-inverse-collapse pad-left-non"> 
+			<div class="navbar-collapse collapse navbar-inverse-collapse pad-left-non">
 				<div class="right_pfl_menu<?php echo $men_col_class;?>">
 					<ul class="project_drop_nav_ul">
-						<?php 
+						<?php
 							$withoutprjdropdownpageArr = array('importexport','mycompany','groupupdatealerts', 'task_type','pending_task','resource_utilization','subscription','creditcard','transaction','account_activity','profile','email_notifications','email_reports','getting_started','settings','changepassword','default_view','help','customer_support','cancel_account','pricing','upgrade_member','downgrade', 'listall','confirm_import','resource_availability','average_age_report','create_resolve_report','pie_chart_report','recent_created_task_report','PlannedVsActualTaskView','resolution_time_report','time_since_report','completed_sprint_report','velocity_reports','gitconnect','profitable_report');
 							if((!in_array(PAGE_NAME, $withoutprjdropdownpageArr) && (CONTROLLER !== 'templates') && CONTROLLER != 'Roles' && (CONTROLLER !== 'users' && PAGE_NAME != 'manage') && (CONTROLLER !== 'projects' && PAGE_NAME != 'manage') && (CONTROLLER !== 'UserSidebar' && PAGE_NAME != 'index')) || (CONTROLLER == 'ganttchart' && PAGE_NAME == 'manage')) {
 							?>
@@ -129,7 +129,7 @@
 							<?php } ?>
 							<?php if(PAGE_NAME !== "work_load"){ ?>
 								<li class="project-dropdown" <?php  if(PAGE_NAME == 'mydashboard' && SES_TYPE < 3){?>style="display:none"<?php } ?>>
-									<div class="btn-group"> 
+									<div class="btn-group">
 										<?php if((count($getallproj) == 0) && (SES_TYPE == 1 || SES_TYPE == 2) ) { } else {?><!--Project:--> <?php } ?>
 										<?php if((count($getallproj) == 0) && (SES_TYPE == 1 || SES_TYPE == 2 || SES_TYPE == 3) ) { ?>
 											<?php if($this->Format->isAllowed('Create Project',$roleAccess)){ ?>
@@ -151,21 +151,21 @@
 															<?php } ?>
 														</span>
 														<i class="nav-dot material-icons">&#xE5D3;</i>
-													</button> 
+													</button>
 													<?php
 														//echo "<span style='color:#000;'>".$this->Format->shortLength(ucfirst($getallproj['0']['Project']['name']),20)."</span>";
 														$swPrjVal = $getallproj['0']['Project']['name'];
 														$soprjval = $getallproj['0']['Project']['name'];
 														} else {
-														$swPrjVal = $this->Format->shortLength($projName,20); 
-														$soprjval = $projName;	    
+														$swPrjVal = $this->Format->shortLength($projName,20);
+														$soprjval = $projName;
 														//if(trim($soprjval) == ''){
 														$soprjval = $getallproj['0']['Project']['name'];
 														//}
 													?>
 													<input type ="hidden" id="pname_dashboard_hid" value="<?php echo $this->Format->formatTitle($projName); ?>" />
 													<input type ="hidden" id="first_recent_hid" value="<?php echo $getallproj['1']['Project']['name']; ?>" />
-													<input type ="hidden" id="second_recent_hid" value="<?php echo $getallproj['2']['Project']['name']; ?>" />         
+													<input type ="hidden" id="second_recent_hid" value="<?php echo $getallproj['2']['Project']['name']; ?>" />
 													<button aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" class="top_project_btn btn btn_cmn_efect cmn_bg btn-info cmn_size dropdown-toggle project-drop-custom-pad prtl" type="button" onclick="view_project_menu('<?php echo PAGE_NAME;?>');">
 														<span id="pname_dashboard" class="ttc ellipsis-view top_header_ptjwth">
 															<?php if($projUniq == 'all'){ ?>
@@ -175,7 +175,7 @@
 															<?php } ?>
 														</span>
 														<i class="nav-dot material-icons">&#xE5D3;</i>
-													</button> 
+													</button>
 												<?php } ?>
 												<div class="dropdown-menu lft popup" id="projpopup">
 													<center>
@@ -192,7 +192,7 @@
 															</div>
 														</div>
 													<?php } ?>
-													<div id="ajaxViewProject" style='display:none;'></div>									
+													<div id="ajaxViewProject" style='display:none;'></div>
 													<div id="ajaxViewProjects" class="scroll-project"></div>
 												</div>
 											<?php } ?>
@@ -209,7 +209,7 @@
 					<?php /*
 					<div class="left_trial upgrd">
 							<span class="left_trial_span">
-								<?php 
+								<?php
 									if(!in_array(PAGE_NAME,array('pricing','upgrade_member'))){
 										if(!$user_subscription['is_cancel'] && ($user_subscription['subscription_id'] == CURRENT_FREE_PLAN || $user_subscription['subscription_id'] == CURRENT_EXPIRED_PLAN) && SES_TYPE == 1 && SES_COMP != 5303  && SES_COMP != 8728 && SES_COMP != 15602 && SES_COMP != 17945 && SES_COMP != 20414){
 											$t_dt = date("Y-m-d H:i:s", strtotime($user_subscription['created'].' +'.FREE_TRIAL_PERIOD.'days'));
@@ -227,7 +227,7 @@
 											}
 											}else{
 											print '&nbsp;';
-										}						
+										}
 										}else{
 										print '&nbsp;';
 									}
@@ -235,16 +235,16 @@
 							</span>
 						</div> */ ?>
 					<ul class="nav navbar-nav profile-bar">
-						
+
 						<li class="">
 							<?php if(PAGE_NAME !== "work_load" && PAGE_NAME !== "updates" && PAGE_NAME != "defect"){ ?>
 									<form class="navbar-form navbar-search top_search header-search-box" role="search">
 										<div id="tour_proj_srch" class="form-group" <?php if(in_array(PAGE_NAME,$priving_arr_fun)){ ?>style="display:none;" <?php } ?>>
-											<div id="srch_remv" onclick="clearSearch('outer');"> 
-												<i class="material-icons">clear</i> 
+											<div id="srch_remv" onclick="clearSearch('outer');">
+												<i class="material-icons">clear</i>
 											</div>
-											<div id="srch_load1" class="lod-src-itm"> 
-												<img src="<?php echo HTTP_IMAGES; ?>images/del.gif" alt="loading" title="<?php echo __('loading');?>"/> 
+											<div id="srch_load1" class="lod-src-itm">
+												<img src="<?php echo HTTP_IMAGES; ?>images/del.gif" alt="loading" title="<?php echo __('loading');?>"/>
 											</div>
 											<span class="nav-srch-icon search_top_hide_show_spn"  onclick="trackEventLeadTracker('Top Header','Search','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');return sch_slide();">
 												<i class="material-icons search_top_hide_show_icon">&#xE8B6;</i>
@@ -293,23 +293,14 @@
 															<a href="javascript:void(0)" class="type-of-hd hdings">
 															<strong><?php echo __('New');?></strong></a>
 														</li>
-														<?php if($this->Format->isAllowed('Create Project',$roleAccess)){ ?> 
+														<?php if($this->Format->isAllowed('Create Project',$roleAccess)){ ?>
 															<li>
 																<a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" onclick="setSessionStorage('Quick Links','Create Project');newProject();">
 																	<i class="material-icons cmn-icon-prop">&#xE8F9;</i><?php echo __('Project');?>
 																</a>
 															</li>
 														<?php } ?>
-														<?php //if(SES_TYPE < 3){?>
-														<?php if($this->Format->isAllowed('Add New User',$roleAccess)){ ?> 
-															<li>
-																<a href="javascript:void(0)" onclick="setSessionStorage('Quick Links','Invite User');newUser()">
-																	<i class="material-icons cmn-icon-prop">&#xE7FB;</i><?php echo __('User');?>
-																</a>
-															</li>                                    
-														<?php } ?>
-														<?php //} ?>
-														<?php if($this->Format->isAllowed('Create Task',$roleAccess)){ ?> 
+														<?php if($this->Format->isAllowed('Create Task',$roleAccess)){ ?>
 															<li>
 																<a href="javascript:void(0)" onclick="setSessionStorage('Quick Links','Create Task');creatask();">
 																	<i class="material-icons cmn-icon-prop">&#xE862;</i><?php echo __('Task');?>
@@ -317,7 +308,7 @@
 															</li>
 														<?php } ?>
 														<?php /*if($_SESSION['project_methodology'] != 'scrum'){ ?>
-															<?php if($this->Format->isAllowed('Create Milestone',$roleAccess)){ ?> 
+															<?php if($this->Format->isAllowed('Create Milestone',$roleAccess)){ ?>
 																<li class="qadd-tg-icon">
 																	<a href="javascript:void(0)" onclick="setSessionStorage('Quick Links','Create Task Group');addEditMilestone('','','','','','');">
 																		<i class="material-icons cmn-icon-prop">&#xE065;</i><?php echo __('Task Group');?>
@@ -332,15 +323,15 @@
 																		<i class="material-icons cmn-icon-prop">&#xE192;</i><?php echo __('Time Entry');?>
 																	</a>
 																</li>
-													<?php } ?>	
+													<?php } ?>
 													<?php if($this->Format->isAllowed('Start Timer',$roleAccess)){ ?>
 																<li id="tour_start_timer">
 																	<a href="javascript:void(0)" onclick="setSessionStorage('Quick Links','Start Timer');openTimer()">
 																		<i class="material-icons cmn-icon-prop">&#xE425;</i><?php echo __('Start Timer');?>
 																	</a>
 																</li>
-															<?php } ?>  														 
-														<?php } ?>  
+															<?php } ?>
+														<?php } ?>
 														<?php //if(SES_TYPE < 3){?>
 														<?php //} ?>
 													</ul>
@@ -351,7 +342,7 @@
 															<a href="javascript:void(0)" class="type-of-hd hdings">
 															<strong><?php echo __('Analytics');?></strong></a>
 														</li>
-														<li class="all-list-glyph <?php if(CONTROLLER == "reports" && (PAGE_NAME == "hours_report")) { ?>active-list<?php } ?>"> 
+														<li class="all-list-glyph <?php if(CONTROLLER == "reports" && (PAGE_NAME == "hours_report")) { ?>active-list<?php } ?>">
 															<a onclick="return trackEventLeadTracker('Quick Links','Hours Report','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');" href="<?php echo HTTP_ROOT."hours-report/" ?>">
 																<i class="material-icons hs-icon">&#xE192;</i>
 																<?php echo __('Hours Spent');?>
@@ -362,9 +353,9 @@
 																<i class="material-icons">&#xE862;</i>
 																<?php echo __('Task Reports');?>
 															</a>
-														</li>	
+														</li>
 														<?php if(SES_TYPE == 1 || SES_TYPE == 2) { ?>
-															<li class="<?php if(CONTROLLER == "reports" && (PAGE_NAME == "weeklyusage_report")) { ?>active-list<?php } ?>"> 
+															<li class="<?php if(CONTROLLER == "reports" && (PAGE_NAME == "weeklyusage_report")) { ?>active-list<?php } ?>">
 																<a onclick="return trackEventLeadTracker('Quick Links','Weekly Usage Report','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');" href="<?php echo HTTP_ROOT."reports/weeklyusage_report/" ?>">
 																	<i class="material-icons">&#xE922;</i>
 																	<?php echo __('Weekly Usage');?>
@@ -372,8 +363,8 @@
 															</li>
 														<?php } ?>
 														<?php if($this->Format->isAllowed('View Resource Utilization',$roleAccess)){ ?>
-															
-														<?php } ?>									
+
+														<?php } ?>
 													</ul>
 												</li>
 												<li class="quick_link_li hide_on_click">
@@ -416,11 +407,11 @@
 														<ul class="inner_company_submenu">
 															<li class="not-hide-li">
 																<a href="javascript:void(0)" class="type-of-hd hdings">
-																<strong><?php echo __("Company Settings");?></strong></a></li>	
+																<strong><?php echo __("Company Settings");?></strong></a></li>
 																<li><a href="<?php echo HTTP_ROOT.'my-company';?>" onclick="trackEventLeadTracker('Quick Links','My Company Page','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');"><i class="material-icons">&#xE0AF;</i> <?php echo __('My Company');?></a></li>
 																<li><a href="<?php echo HTTP_ROOT.'import-export';?>" onclick="trackEventLeadTracker('Quick Links','Import-Export Page','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');"><i class="material-icons">&#xE0C3;</i> <?php echo __('Import & Export');?></a></li>
 																<li><a href="<?php echo HTTP_ROOT.'task-type';?>" onclick="trackEventLeadTracker('Quick Links','Task Type Page','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');"><i class="material-icons">&#xE862;</i> <?php echo __('Task Type');?></a></li>
-																								
+
 														</ul>
 													</li>
 													<?php }else{ ?>
@@ -437,11 +428,11 @@
 																<li><a href="<?php echo HTTP_ROOT.'users/launchpad';?>" onclick="trackEventLeadTracker('Quick Links','Launchpad Page','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');"><i class="material-icons">launch</i> <?php echo __('Launchpad');?></a></li>
 															<?php } ?>
 															<li><a href="<?php echo HTTP_ROOT.'users/default_view';?>" onclick="trackEventLeadTracker('Quick Links','Default View Page','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');"><i class="material-icons">view_agenda</i> <?php echo __('Default View');?></a></li>
-															
+
 															<li><a href="javascript:void(0);" onclick="trackEventLeadTracker('Quick Links','Getting Started Page','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');gettingStarted();"><i class="material-icons">near_me</i> <?php echo __('Getting Started');?></a></li>
 														</ul>
 													</li>
-												<?php } ?>                                    
+												<?php } ?>
 												<?php }else{ ?>
 												<?php echo $this->element('custom_quicklink', array(
 													"menu_data" => $menu_data,
@@ -452,14 +443,14 @@
 										</ul>
 									<?php } ?>
 								</li>
-							<?php } ?> 
+							<?php } ?>
 							<?php if (in_array($GLOBALS['user_subscription']['subscription_id'], array(11, 13)) || 1) { ?>
 								<?php /*<li class="quick_tour vline" id="startTourBtn" <?php if ((PAGE_NAME == 'dashboard' && CONTROLLER != "project_reports") || (CONTROLLER == "projects" && PAGE_NAME == "manage" && (!isset($this->request->params['pass'][0]) || $this->request->params['pass'][0] != 'active-grid')) || (CONTROLLER == "users" && PAGE_NAME == "manage") || (CONTROLLER == "templates" && PAGE_NAME == "projects")) { ?>style="display:inline-block;"<?php } else { ?>style="display:none;"<?php } ?> rel="tooltip_down" title="<?php echo __('Quick Tour'); ?>">
 									<a class="" href="javascript:void(0);" onclick="return trackEventLeadTracker('Left Panel', 'Quick Tour', '<?php echo $_SESSION['SES_EMAIL_USER_LOGIN']; ?>');">
 									<span class="cmn_lh_sp refer_frnd"></span>
 									</a>
 								</li> */ ?>
-							
+
 							<?php } ?>
 							<li class="nav-profile-dropdown nav-notification-bar quick-add-drop dropdown hover-menu cmn_parent_navli vline">
 								<a class="dropdown-toggle" data-target="#" href="javascript:void(0)" data-toggle="dropdown" onclick="seenNotification('total');trackEventLeadTracker('Header Link','Notification','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');" title="<?php echo __('Notifications'); ?>" rel="tooltip_bot">
@@ -483,7 +474,7 @@
 									<span class="material-icons">
 										help
 									</span>
-									
+
 								</a>
 								<div class="dropdown-menu border-box top_maindropdown-menu fadeout_bkp help_updates">
 									<ul class="notification-ul">
@@ -500,7 +491,7 @@
 						<?php } ?>
 						<li class="nav-profile-dropdown dropdown hover-menu cmn_parent_navli vline pfl_dtl_li">
 							<div class="gray-out-quick"></div>
-							<?php 
+							<?php
 								$usrArr = $this->Format->getUserDtls(SES_ID);
 								if(count($usrArr)) {
 									$ses_name = $usrArr['User']['name'];
@@ -516,7 +507,7 @@
 										<img data-original="<?php echo HTTP_ROOT;?>users/image_thumb/?type=photos&file=<?php echo $ses_photo; ?>&sizex=28&sizey=28&quality=100" class="lazy round_profile_img" height="28" width="28" />
 										<?php } else {
 											$random_bgclr = $this->Format->getProfileBgColr(SES_ID);
-											$usr_name_fst = mb_substr(trim($ses_name),0,1, "utf-8");											
+											$usr_name_fst = mb_substr(trim($ses_name),0,1, "utf-8");
 										?>
 										<span class="cmn_profile_holder <?php echo $random_bgclr; ?>"><?php echo $usr_name_fst; ?></span>
 									<?php } ?>
@@ -532,16 +523,16 @@
 										<span class="cmpny_placehld_icon"><i class="material-icons">business</i></span>
 									<?php /*echo __('This account is managed by');*/?> <span title="<?php echo CMP_SITE; ?>" class="account_mgt_by"><?php echo $this->Format->shortLength(CMP_SITE,25); ?></span></p>
 									<ul id="group_menu">
-										
+
 										<li><a href="javascript:void(0)" class="grp_ttle togle_link">
 										<span class="cmn_cstm_set"><i class="material-icons">perm_identity</i><i class="material-icons abs_set_icon">&#xE8B8;</i></span> <?php echo __('Personal Settings');?></a>
-										<ul class="grp_sub_item">                                 
+										<ul class="grp_sub_item">
 											<li><a href="<?php echo HTTP_ROOT.'users/profile';?>" onclick="return trackEventLeadTracker('Top Setting','My Profile Page','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');"><?php echo __('My Profile');?></a></li>
 											<li><a href="<?php echo HTTP_ROOT.'users/changepassword';?>" onclick="return trackEventLeadTracker('Top Setting','Change Password Page','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');"><?php echo __('Change Password');?></a></li>
 											<li><a href="<?php echo HTTP_ROOT.'users/email_notifications';?>" onclick="return trackEventLeadTracker('Top Setting','Notifications','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');"><?php echo __('Notifications');?></a></li>
 											<li><a href="<?php echo HTTP_ROOT.'users/email_reports';?>" onclick="trackEventLeadTracker('Top Setting','Email Reports Page','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');"><?php echo __('Email Reports');?></a></li>
 											<li><a href="<?php echo HTTP_ROOT.'users/default_view';?>" onclick="trackEventLeadTracker('Top Setting','Default View Page','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');"><?php echo __('My Default View');?></a></li>
-											    
+
 											<li>
 												<a href="<?php echo HTTP_ROOT;?>quick-link-settings"><span></span><?php echo __('Quick Links');?></a>
 											</li>
@@ -556,9 +547,9 @@
 													<?php if(SES_TYPE == 1 || SES_TYPE == 2){ ?>
 														<li><a href="<?php echo HTTP_ROOT.'my-company';?>" onclick="trackEventLeadTracker('Top Setting','My Company Page','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');"><?php echo __('My Company');?></a></li>
 														<li><a href="<?php echo HTTP_ROOT.'smtp-settings';?>"><?php echo __('SMTP Configuration');?></a></li>
-														
+
 														<li><a href="<?php echo HTTP_ROOT.'project-status';?>" onclick="trackEventLeadTracker('Top Setting','Project Status','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');"><?php echo __('Project Status');?></a></li>
-														
+
 													<?php } ?>
 												</ul>
 											</li>
@@ -567,19 +558,19 @@
 													<?php if(SES_TYPE == 1 || SES_TYPE == 2){ ?>
 														<li><a href="<?php echo HTTP_ROOT.'import-export';?>" onclick="trackEventLeadTracker('Top Setting','Import-Export Page','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');"><?php echo __('Import & Export');?></a></li>
 														<li><a href="<?php echo HTTP_ROOT.'task-type';?>" id="tour_task_type"><?php echo __('Task Type');?></a></li>
-														
+
 													<?php } ?>
 												</ul>
 											</li>
-										<?php } ?>										
+										<?php } ?>
 										<li><a href="javascript:void(0)" class="grp_ttle togle_link"><span class="cmn_cstm_set"><i class="material-icons">info</i></span> <?php echo __('Orangescrum Info');?></a>
 											<ul class="grp_sub_item">
-												<li><a href="javascript:void(0);" onclick="trackEventLeadTracker('Top Setting','Getting Started Page','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');gettingStarted();"><?php echo __('Getting Started');?></a></li> 
-												<li><a href="https://www.orangescrum.com/schedule-a-demo" title="Talk to an Expert">Talk to an Expert</a></li> 
-												
+												<li><a href="javascript:void(0);" onclick="trackEventLeadTracker('Top Setting','Getting Started Page','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');gettingStarted();"><?php echo __('Getting Started');?></a></li>
+												<li><a href="https://www.orangescrum.com/schedule-a-demo" title="Talk to an Expert">Talk to an Expert</a></li>
+
 											</ul>
 										</li>
-										
+
 										<?php if(TOT_COMPANY >= 2)  { ?>
 											<li class="border_top"><a href="<?php echo HTTP_ROOT.'users/launchpad';?>" class="grp_ttle" onclick="return trackEventLeadTracker('Top Setting','Launchpad','<?php echo $_SESSION['SES_EMAIL_USER_LOGIN'];?>');"><span class="cmn_cstm_set"><i class="material-icons">flight_takeoff</i></span> <?php echo __('Launchpad');?></a></li>
 										<?php } ?>
@@ -600,7 +591,7 @@
 	<?php } else { ?>
 <?php } ?>
 <?php if(PAGE_NAME != "updates" && PAGE_NAME != "help" && PAGE_NAME != "tour" && PAGE_NAME != "customer_support") { ?>
-	
+
 	<input type="hidden" name="pub_counter" id="pub_counter" value="0" />
 	<input type="hidden" name="hid_casenum" id="hid_casenum" value="0" />
 	<div onClick="removePubnubMsg();" id="punnubdiv" align="center" style="display:none;">
@@ -610,8 +601,8 @@
 			<div class="fr close_popup" >X</div>
 		</div>
 	</div>
-	<!-- Flash Success and error msg starts --> 
-	<!-- Flash Success and error msg ends --> 
+	<!-- Flash Success and error msg starts -->
+	<!-- Flash Success and error msg ends -->
 	<!-- common popups like Create task, Create project, Invite User -->
 <?php } ?>
 <?php //echo $this->element('popup'); ?>
@@ -622,14 +613,14 @@
 	</div>
 <?php } ?>
 <?php if(PAGE_NAME != "updates" && PAGE_NAME != "help" && PAGE_NAME != "tour" && PAGE_NAME != "customer_support" && PAGE_NAME !='onbording'){ ?>
-	<!-- breadcrumb, project popup 
-	<input type="hidden" id="checkload" value="0">-->  
+	<!-- breadcrumb, project popup
+	<input type="hidden" id="checkload" value="0">-->
 	<?php //echo $this->element('breadcrumb'); ?>
 	<?php if(PAGE_NAME=='dashboard'){?>
 	<?php } ?>
 <?php } ?>
 <script language="javascript" type="text/javascript">
-	$(document).ready(function () { 
+	$(document).ready(function () {
 		$('#group_menu > li > a').click(function(){
 			if (!$(this).hasClass('active')){
 				$('#group_menu li .grp_sub_item').slideUp();
@@ -647,10 +638,10 @@
 		document.location.href = "<?php echo HTTP_ROOT.'getting_started';?>";
 	}
 	function setVideoContent(){
-		$('.player_wrapper11').html('');	
+		$('.player_wrapper11').html('');
 		$('.player_wrapper11').html('<iframe id="play_yt_video" width="600" height="335" src="https://www.youtube.com/embed/bTyAakCMrnY?rel=0&enablejsapi=1" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>');
 	}
-	/*var ONBOARD_TOUR = "<?php echo $_SESSION['ONBOARD_TOUR']; ?>";*/ 
+	/*var ONBOARD_TOUR = "<?php echo $_SESSION['ONBOARD_TOUR']; ?>";*/
 </script>
 <script type="text/template" id="notification_tmpl">
 	<?php echo $this->element('top_notifications'); ?>

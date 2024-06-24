@@ -53,7 +53,7 @@
     }
     .new-dashboard-page .row.top_dboard_src .table {margin-bottom: 10px;width: 100%;max-width: 100%;background-color: transparent;border-spacing: 0;border-collapse: collapse;}
     .new-dashboard-page .row.top_dboard_src .table > thead > tr > th {vertical-align: bottom;color: #484848;font-size:13px;font-weight: 600;font-weight: 600;text-align: left !important;}
-		.new-dashboard-page .row.top_dboard_src .table-responsive.prjct-rag-tbl tr td{padding: 6px 10px !important;vertical-align: middle;} 
+		.new-dashboard-page .row.top_dboard_src .table-responsive.prjct-rag-tbl tr td{padding: 6px 10px !important;vertical-align: middle;}
 		.new-dashboard-page .row.top_dboard_src .table > tbody > tr > td strong{font-weight:500;text-align: left !important;}
     .new-dashboard-page .row.top_dboard_src .table > tbody {color: #212121/*#797979*/;}
     .new-dashboard-page .row.top_dboard_src .table > tbody > tr > td, .table > thead > tr > th {padding: 8px;line-height: 1.42857143;vertical-align: top;border-bottom: 1px solid #ebeff2;text-align: left !important;}
@@ -121,7 +121,7 @@
         border-right: none;
     }
     .tbody_scroll tbody td, .tbody_scroll thead th {
-        width: 16%;  Optional 
+        width: 16%;  Optional
         border-right: 1px solid black;
     }*/
 
@@ -164,10 +164,10 @@
         .top_ttl_box .to_do_ttl h2{  width: 80px;  overflow: hidden;  text-overflow: ellipsis;  white-space: nowrap;}
     }
     .dynaic_elipse_data{display: inline-block;max-width:100%;white-space:nowrap;text-overflow:ellipsis; overflow:hidden}
-    .dashboard_page .user-taskype-box, .dashboard_page .user-dash-activity{height:430px;} 
+    .dashboard_page .user-taskype-box, .dashboard_page .user-dash-activity{height:430px;}
     .select2-container .select2-search--inline .select2-search__field{margin-top:0.5px}
     .select_field_wrapper .select2 .select2-selection .select2-selection__rendered{padding:3px 15px 0 15px}
- 
+
 </style>
 <script type="text/javascript" src="<?php echo JS_PATH; ?>moment.js" defer></script>
 <div class="dashboard_page" ng-app="dashboard_App">
@@ -219,7 +219,7 @@
                     <div  class="cb"></div>
                 </div>
             </div>
-        </div>    
+        </div>
     <div class="row mtop20 dash-row dash-mpad">
         <div class="col-lg-6 padrht-non">
             <div class="width100 cmn_bdr_shadow top-5p">
@@ -371,16 +371,6 @@
 </div>
 <div class="crt_task_btn_btm">
     <div class="pr">
-  <?php if($this->Format->isAllowed('Add New User',$roleAccess)){ ?>
-            <div class="os_plus usr_btn">
-                <div class="ctask_ttip">
-                    <span class="label label-default"><?php echo __('Add New User');?></span>
-                </div>
-                <a href="javascript:void(0)" onclick="setSessionStorage('Dashboard Page', 'Add New User');newUser();">
-                    <i class="material-icons cmn-icon-prop">&#xE7FB;</i>
-                </a>
-            </div>
-<?php } ?>
   <?php if($this->Format->isAllowed('Create Project',$roleAccess)){ ?>
         <div class="os_plus prj_btn">
             <div class="ctask_ttip">
@@ -391,16 +381,6 @@
             </a>
         </div>
   <?php } ?>
-  <?php if($this->Format->isAllowed('Create Milestone',$roleAccess)){ ?>
-        <div class="os_plus ctg_btn">
-            <div class="ctask_ttip">
-                <span class="label label-default"><?php echo __('Create Task Group');?></span>
-            </div>
-            <a href="javascript:void(0)" onclick="setSessionStorage('Dashboard Page','Create Task Group');addEditMilestone('','','','','','');">
-                <i class="material-icons">&#xE065;</i>
-            </a>
-        </div>
-  <?php }?>
     </div>
 <?php if($this->Format->isAllowed('Create Task',$roleAccess)){ ?>
     <div class="os_plus">
@@ -422,7 +402,7 @@
 	$( document ).ready(function() {
         <?php if($this->Session->read('project_url')=='create_project'){?>
              setSessionStorage('Quick Links','Create Project');
-             newProject();   
+             newProject();
         <?php }?>
        $("#sel_rsrc_project").select2({
         placeholder: "Select projects",
@@ -430,13 +410,13 @@
        });
        $("#sel_rsrc_time_typ").select2();
     });
- 
+
  /**
   * prj_change_rsrc_reprt
   * fetch resource cost report on change of project list
   * @return void
   * @author bijay
-  * date- 07/08/2021 
+  * date- 07/08/2021
   */
  function prj_change_rsrc_reprt() {
     $('#resource_cost_report').html("");
@@ -461,7 +441,7 @@
         $('#resource_cost_report_ldr').hide();
         $('#resource_cost_report').html(data);
     });
-}  
+}
 
 /**
  * fulscreen_div
@@ -478,7 +458,7 @@ function fulscreen_div(type) {
             $('.cst_rprt_tr').show();
             $('#cost_rpt_highchart').hide();
             $('#rag_cost_report').addClass('fullscreen');
-            
+
         } else {
             showTopErrSucc('error', 'No data to display');
         }
@@ -502,7 +482,7 @@ function fulscreen_div1(type) {
 }
 /**
  * hide_flscrn_div
- * hide full screen data and show dashboard 
+ * hide full screen data and show dashboard
  * @return void
  * @author bijay
  * date - 07/08/2021
@@ -520,7 +500,7 @@ function fulscreen_div1(type) {
             // $('.resource_tr').hide();
             // $('#resource_cost_rpt_highchart').show();
             $('#resource_cost_report').removeClass('fullscreen');
-        } 
+        }
     }
     $(".select2-scroll-remover").click(function(e){
         $('body').addClass('resource-cost-overflow');
