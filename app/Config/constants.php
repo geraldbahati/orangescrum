@@ -43,25 +43,38 @@ define("TASK_GROUP_CASE_PAGE_LIMIT", 25);
 $ht = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? "https://" : "http://";
 define('PROTOCOL', $ht);
 
-if(stristr($_SERVER['SERVER_NAME'], '/') && substr($_SERVER['SERVER_NAME'], -1) == '/'){
-	define('DOMAIN', $_SERVER['SERVER_NAME']);
-}else{
-	define('DOMAIN', $_SERVER['SERVER_NAME'] . "/");
-}
-/*Subfolder set up */
-define('SUB_FOLDER', '@SUB_FOLDER');
+if (php_sapi_name() !== 'cli') {
+    $port = $_SERVER['SERVER_PORT'];
+    $portString = '';
+    if (($ht == 'http://' && $port != 80) || ($ht == 'https://' && $port != 443)) {
+        $portString = ':' . $port;
+    }
 
-define('HTTP_SERVER', PROTOCOL . DOMAIN);
-if(stristr(HTTP_SERVER, '/') && substr(HTTP_SERVER, -1) == '/' && SUB_FOLDER == '/'){
-	define('HTTP_ROOT', HTTP_SERVER);
-	define('HTTP_APP', PROTOCOL . DOMAIN);
-	define('HTTPS_HOME', PROTOCOL . DOMAIN);
-	define('HTTP_HOME', "http://" . DOMAIN);
-}else{
-	define('HTTP_ROOT', HTTP_SERVER . SUB_FOLDER);
-	define('HTTP_APP', PROTOCOL . DOMAIN . SUB_FOLDER);
-	define('HTTPS_HOME', PROTOCOL . DOMAIN . SUB_FOLDER);
-	define('HTTP_HOME', "http://" . DOMAIN . SUB_FOLDER);
+    if (stristr($_SERVER['SERVER_NAME'], '/') && substr($_SERVER['SERVER_NAME'], -1) == '/') {
+        define('DOMAIN', $_SERVER['SERVER_NAME']);
+    } else {
+        define('DOMAIN', $_SERVER['SERVER_NAME'] . "/");
+    }
+    define('FULL_DOMAIN', $_SERVER['SERVER_NAME'] . $portString . "/");
+} else {
+    define('DOMAIN', 'localhost');
+    define('FULL_DOMAIN', 'localhost');
+}
+
+/* Subfolder set up */
+define('SUB_FOLDER', 'OS-CakePHP4/');
+
+define('HTTP_SERVER', PROTOCOL . FULL_DOMAIN);
+if (stristr(HTTP_SERVER, '/') && substr(HTTP_SERVER, -1) == '/' && SUB_FOLDER == '/') {
+    define('HTTP_ROOT', HTTP_SERVER);
+    define('HTTP_APP', PROTOCOL . FULL_DOMAIN);
+    define('HTTPS_HOME', PROTOCOL . FULL_DOMAIN);
+    define('HTTP_HOME', "http://" . FULL_DOMAIN);
+} else {
+    define('HTTP_ROOT', HTTP_SERVER . SUB_FOLDER);
+    define('HTTP_APP', PROTOCOL . FULL_DOMAIN . SUB_FOLDER);
+    define('HTTPS_HOME', PROTOCOL . FULL_DOMAIN . SUB_FOLDER);
+    define('HTTP_HOME', "http://" . FULL_DOMAIN . SUB_FOLDER);
 }
 if($_SERVER['SERVER_NAME'] == 'localhost'){
 	define('DOMAIN_COOKIE', false);
