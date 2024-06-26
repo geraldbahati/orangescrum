@@ -568,7 +568,7 @@ $(document).ready(function() {
             createlog('', '', $(this).closest('td').attr('data-logid'), 0, 0, $(this).attr('data-task-id'));
         }
     });
-    
+
     $('#submit_feed').click(function(){
         openPopup();
         $('.feedback_form_popup').show();
@@ -7753,7 +7753,7 @@ $(".edit-exist-usr").click(function() {
     }
 });
 $(".create_new_password").click(function() {
-  
+
         // edit_user(uniqid, usr_name);
         var uniqid = $(this).attr('data-usr-uid');
         openPopup();
@@ -7763,8 +7763,8 @@ $(".create_new_password").click(function() {
         // $("#unID").val(uniqid);
         localStorage.setItem("unqID", uniqid);
         // $("#unqID").data('unqid', uniqid);
-        
-    
+
+
 });
 function add_project(usr_id, usr_name, is_invite_user) {
     $('#pop_up_add_user_proj_label').hide();
@@ -11301,6 +11301,7 @@ function addEditMilestone(obj, mileuniqid, mid, name, cnt, mlstfrom) {
 var asgnd_usr_arr = new Array();
 
 function addUsersToProject(PrjUid) {
+    return false;
     var company_trial_expire = $('#company_trial_expire').val();
     if (company_trial_expire == 1) {
         showTopErrSucc('error', _('Sorry! you can not add user(s) to project.') + '<br />' + _('Please upgrade your account to add more user(s).'));
@@ -16323,7 +16324,7 @@ function ajaxGridViewLoad(type, srch = null, page = null, filtype = null, order 
                 $('#prj_status_sort').removeClass('tsk_asc tsk_desc');
                 $("#prj_status_sort").addClass(tcls);
             }
-           
+
         }
         $('#caseLoader').hide();
     }, "json");
