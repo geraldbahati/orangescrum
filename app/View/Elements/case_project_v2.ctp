@@ -2,7 +2,7 @@
 .task_listing table.table td.list-cont-td {padding: 8px;}	
 </style>
 <?php if(defined("RELEASE_V") && RELEASE_V){ ?>
-<% (typeof GrpBy != 'undefined')?GrpBy:''; 
+<% GrpBy = (typeof GrpBy != 'undefined') ? GrpBy : ''; 
 var check_ids_array = typeof getCookie('PREOPENED_TASK_GROUP_IDS') != 'undefined' ?JSON.parse(getCookie('PREOPENED_TASK_GROUP_IDS')) :[];
 %>
 <%
@@ -131,7 +131,8 @@ var task_parent_ids = JSON.stringify(task_parent_ids);
 						</li>
 					</ul>
 				</div>
-			</span>		  
+			</span>
+			<span><div onclick="showOverDueTask();" style="font-size:18px;color:#2d6dc4;"><?php echo __("Overdue Tasks : ")  ?><%= over_due_task_count %></div></span>		  
           <?php if($this->Format->displayHelpVideo()){ ?>
           <span style="line-height:30px;">    
           <a href="javascript:void(0);" class="help-video-pop"  video-url = "https://www.youtube.com/embed/G1oCxuSd640" onclick="showVideoHelp(this);" ><i class="material-icons">play_circle_outline</i><?php echo PLAY_VIDEO_TEXT;?></a> 
@@ -727,7 +728,14 @@ var task_parent_ids = JSON.stringify(task_parent_ids);
                                         <a href="javascript:void(0);"><i class="material-icons">&#xE192;</i><?php echo __('Time Entry');?></a>
                                     </li>
                         <% } %>                                  
-                         <% } %>          
+                         <% } %>  
+						 <% if(isAllowed("Start Timer",projectUniqid)){ %>
+                                    <% if(caseLegend !=3 && caseTypeId != 10){ %>
+                                    <li onclick="setSessionStorage(<%= '\'Task List Page\'' %>, <%= '\'Start Timer\'' %>);startTimer(<%= '\'' + caseAutoId + '\'' %>,<%= '\'' + escape(htmlspecialchars(caseTitle,3)) + '\'' %>, <%= '\'' + caseUniqId + '\'' %>, <%= '\'' + projectUniqid + '\'' %>, <%= '\'' + escape(projectName) + '\'' %>); trackEventWithIntercom(<%= '\'timer\'' %>,<%= '\'\'' %>);">
+                                        <a href="javascript:void(0);"><i class="material-icons">&#xE425;</i><?php echo __('Start Timer');?></a>
+                                    </li>
+                                    <% } %>
+                          <% } %>        
                           
                                     <?php } ?>
                                     <?php if(SES_COMP == 4 && ($_SESSION['Auth']['User']['is_client'] == 0)) { ?>
