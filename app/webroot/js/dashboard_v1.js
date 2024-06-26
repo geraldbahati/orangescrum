@@ -545,7 +545,7 @@ function ajaxCaseView(page) {
             } else if ((page == 'subtask' || hashtag[0] == 'subtask') && page != 'tasks') {
                 $("#caseViewSpan").html(tmpl("case_subtasks_tmpl", res));
             } else {
-                $("#caseViewSpan").html(tmpl("", res));
+                $("#caseViewSpan").html(tmpl("case_project_tmpl", res));
                 if (strAction == 'case_project') {
                     TaskGroupByItem();
                 }
