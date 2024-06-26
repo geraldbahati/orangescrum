@@ -2,7 +2,8 @@
 .task_listing table.table td.list-cont-td {padding: 8px;}	
 </style>
 <?php if(defined("RELEASE_V") && RELEASE_V){ ?>
-<% GrpBy = (typeof GrpBy != 'undefined') ? GrpBy : ''; 
+<% GrpBy = (typeof GrpBy != 'undefined') ? GrpBy : '';
+caseSrch = (typeof caseSrch != 'undefined') ? caseSrch : '';
 var check_ids_array = typeof getCookie('PREOPENED_TASK_GROUP_IDS') != 'undefined' ?JSON.parse(getCookie('PREOPENED_TASK_GROUP_IDS')) :[];
 %>
 <%
