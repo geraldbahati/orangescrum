@@ -1,9 +1,10 @@
 <?php if(defined("RELEASE_V") && RELEASE_V){ ?>
 <% 
 GrpBy = (typeof GrpBy != 'undefined') ? GrpBy : '';
+debugger;
 caseSrch = (typeof caseSrch != 'undefined') ? caseSrch : '';
-caseSrch = (typeof field_name_arr != 'undefined') ? field_name_arr : [];
-var check_ids_array = typeof getCookie('PREOPENED_TASK_GROUP_IDS') != 'undefined' ?JSON.parse(getCookie('PREOPENED_TASK_GROUP_IDS')) :[];
+field_name_arr = (typeof field_name_arr != 'undefined') ? field_name_arr : [];
+check_ids_array = typeof getCookie('PREOPENED_TASK_GROUP_IDS') != 'undefined' ?JSON.parse(getCookie('PREOPENED_TASK_GROUP_IDS')) :[];
 %>
 <%
 var rel_arr = new Array();
