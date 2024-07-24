@@ -61,22 +61,22 @@ class DATABASE_CONFIG {
 
 	public $default = array(
 		'datasource' => 'Database/Mysql',
-		'persistent' => false,
-		'host' => 'localhost', //ex. localhost
-		'login' => '', //root
-		'password' => '',
-		'database' => '',//orangescrum
-		'prefix' => '',
+        'persistent' => false,
+'host' => 'db',
+'login' => 'root',
+'password' => 'rootpassword',
+'database' => 'orangescrum',
+        'prefix' => '',
 		//'encoding' => 'utf8',
 	);
 	
 	/*public $test = array(
 		'datasource' => 'Database/Mysql',
 		'persistent' => false,
-'host' => 'localhost',
+'host' => 'db',
 'login' => 'root',
-'password' => '',
-'database' => '',
+'password' => 'rootpassword',
+'database' => 'orangescrum',
 		'prefix' => '',
 		//'encoding' => 'utf8',
 	);*/
