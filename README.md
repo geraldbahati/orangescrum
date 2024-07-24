@@ -187,6 +187,51 @@ To safeguard your data, set up regular backups of your MySQL database:
   docker exec -i orangescrum-db-1 mysql -u root -p orangescrum < backup.sql
   ```
 
+### Step 10: Manually Copy the `database.sql` File (Optional)
+
+If the `database.sql` file is not automatically executed, you can manually copy and run it:
+
+1. **Copy the `database.sql` file to the `db` container:**
+   ```bash
+   docker cp ./database.sql orangescrum-db-1:/database.sql
+   ```
+
+2. **Access the `db` container:**
+   ```bash
+   docker exec -it orangescrum-db-1 bash
+   ```
+
+3. **Run the `database.sql` file:**
+   ```bash
+   mysql -u root -p orangescrum < /database.sql
+   ```
+
+4. **Verify the Import:**
+   Access the MySQL client to verify the tables:
+   ```bash
+   docker exec -it orangescrum-db-1 mysql -u root -p
+   ```
+
+   Enter the root password, then:
+   ```sql
+   USE orangescrum;
+   SHOW TABLES;
+   ```
+
+### Step 10: Set Up Backup and Restore
+
+To safeguard your data, set up regular backups of your MySQL database:
+
+- **Backup Command:**
+  ```bash
+  docker exec orangescrum-db-1 mysqldump -u root -p orangescrum > backup.sql
+  ```
+
+- **Restore Command:**
+  ```bash
+  docker exec -i orangescrum-db-1 mysql -u root -p orangescrum < backup.sql
+  ```
+
 ## Troubleshooting
 
 If you encounter any issues, ensure the following:
