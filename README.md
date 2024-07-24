@@ -13,29 +13,29 @@ This guide will help you set up and run Orangescrum using Docker. Follow the ste
 
 Create a `Dockerfile` in the root of your project directory with the following content:
 
-\`\`\`Dockerfile
+```Dockerfile
 FROM php:7.2-apache
 
 # Install required PHP extensions
 RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libxml2-dev \
-    libicu-dev \
-    libcurl4-openssl-dev \
-    zlib1g-dev \
-    libssl-dev \
-    mariadb-client \
-    && docker-php-ext-install -j$(nproc) iconv \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install pdo pdo_mysql mysqli \
-    && docker-php-ext-install mbstring \
-    && docker-php-ext-install intl \
-    && docker-php-ext-install curl \
-    && docker-php-ext-install soap \
-    && docker-php-ext-install zip
+libpng-dev \
+libjpeg-dev \
+libfreetype6-dev \
+libxml2-dev \
+libicu-dev \
+libcurl4-openssl-dev \
+zlib1g-dev \
+libssl-dev \
+mariadb-client \
+&& docker-php-ext-install -j$(nproc) iconv \
+&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+&& docker-php-ext-install -j$(nproc) gd \
+&& docker-php-ext-install pdo pdo_mysql mysqli \
+&& docker-php-ext-install mbstring \
+&& docker-php-ext-install intl \
+&& docker-php-ext-install curl \
+&& docker-php-ext-install soap \
+&& docker-php-ext-install zip
 
 # Enable Apache modules
 RUN a2enmod rewrite headers
@@ -48,9 +48,9 @@ COPY . /var/www/html
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/app/Config \
-    && chmod -R 775 /var/www/html/app/tmp \
-    && chmod -R 775 /var/www/html/app/webroot
+&& chmod -R 775 /var/www/html/app/Config \
+&& chmod -R 775 /var/www/html/app/tmp \
+&& chmod -R 775 /var/www/html/app/webroot
 
 # Suppress Apache ServerName warning
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
@@ -60,57 +60,57 @@ EXPOSE 80
 
 # Start Apache server
 CMD ["apache2-foreground"]
-\`\`\`
+```
 
 ### Step 2: Create a Docker Compose File
 
 Create a `docker-compose.yml` file in the root of your project directory with the following content:
 
-\`\`\`yaml
+```yaml
 version: '3.8'
 
 services:
-  app:
-    build: .
-    ports:
-      - "8080:80"
-    volumes:
-      - .:/var/www/html
-    depends_on:
-      - db
+app:
+build: .
+ports:
+- "8080:80"
+volumes:
+- .:/var/www/html
+depends_on:
+- db
 
-  db:
-    image: mariadb:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: orangescrum
-      MYSQL_USER: orangescrum_user
-      MYSQL_PASSWORD: password
-    volumes:
-      - db_data:/var/lib/mysql
-      - $PWD/database.sql:/docker-entrypoint-initdb.d/database.sql 
-    ports:
-      - "3307:3306"
+db:
+image: mariadb:latest
+environment:
+MYSQL_ROOT_PASSWORD: rootpassword
+MYSQL_DATABASE: orangescrum
+MYSQL_USER: orangescrum_user
+MYSQL_PASSWORD: password
+volumes:
+- db_data:/var/lib/mysql
+- $PWD/database.sql:/docker-entrypoint-initdb.d/database.sql
+ports:
+- "3307:3306"
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    environment:
-      PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: rootpassword
-    ports:
-      - "8081:80"
+phpmyadmin:
+image: phpmyadmin/phpmyadmin
+environment:
+PMA_HOST: db
+MYSQL_ROOT_PASSWORD: rootpassword
+ports:
+- "8081:80"
 
-  mysql-client:
-    image: mysql:latest
-    command: sleep infinity
-    depends_on:
-      - db
-    networks:
-      - default
+mysql-client:
+image: mysql:latest
+command: sleep infinity
+depends_on:
+- db
+networks:
+- default
 
 volumes:
-  db_data:
-\`\`\`
+db_data:
+```
 
 ### Step 3: Prepare the Database Initialization File
 
@@ -120,38 +120,38 @@ Ensure your `database.sql` file is in the root of your project directory. This f
 
 Run the following commands to build and start your Docker containers:
 
-\`\`\`bash
+```bash
 docker-compose down
 docker-compose up -d
-\`\`\`
+```
 
 ### Step 5: Verify Apache Configuration
 
 1. **Access the `app` container:**
-   \`\`\`bash
+   ```bash
    docker exec -it orangescrum-app-1 bash
-   \`\`\`
+   ```
 
 2. **Enable the `mod_headers` module:**
-   \`\`\`bash
+   ```bash
    a2enmod headers
    service apache2 restart
-   \`\`\`
+   ```
 
 3. **Check that the module is loaded:**
-   \`\`\`bash
+   ```bash
    apache2ctl -M | grep headers
-   \`\`\`
+   ```
 
-   You should see \`headers_module (shared)\` in the output.
+   You should see `headers_module (shared)` in the output.
 
 ### Step 6: Access phpMyAdmin
 
 1. **Open your browser and navigate to `http://localhost:8081`.**
 2. **Log in using the following credentials:**
-   - **Server:** db
-   - **Username:** root
-   - **Password:** rootpassword
+    - **Server:** db
+    - **Username:** root
+    - **Password:** rootpassword
 
 3. **Verify the `orangescrum` database and tables are correctly set up.**
 
@@ -164,28 +164,28 @@ Open your browser and navigate to `http://localhost:8080` to access the Orangesc
 To monitor the logs for troubleshooting or performance insights:
 
 - **View Apache logs:**
-  \`\`\`bash
+  ```bash
   docker logs orangescrum-app-1
-  \`\`\`
+  ```
 
 - **View MariaDB logs:**
-  \`\`\`bash
+  ```bash
   docker logs orangescrum-db-1
-  \`\`\`
+  ```
 
 ### Step 9: Set Up Backup and Restore
 
 To safeguard your data, set up regular backups of your MySQL database:
 
 - **Backup Command:**
-  \`\`\`bash
+  ```bash
   docker exec orangescrum-db-1 mysqldump -u root -p orangescrum > backup.sql
-  \`\`\`
+  ```
 
 - **Restore Command:**
-  \`\`\`bash
+  ```bash
   docker exec -i orangescrum-db-1 mysql -u root -p orangescrum < backup.sql
-  \`\`\`
+  ```
 
 ## Troubleshooting
 
