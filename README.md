@@ -9,6 +9,49 @@ This guide will help you set up and run Orangescrum using Docker. Follow the ste
 
 ## Step-by-Step Guide
 
+
+
+## Installation of Docker and docker compose
+
+You can copy and paste the whole thing it should work
+
+```bash
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+```
+
+### Install the Docker packages.
+To install the latest version, run:
+
+```bash
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+``` 
+
+### Verify that the Docker Engine installation is successful by running the `hello-world` image.
+
+```bash
+sudo docker run hello-world
+```
+
+### Install Docker Compose
+Install the latest docker compose version:
+
+```bash
+sudo apt-get update
+sudo apt-get install docker-compose-plugin
+```
+
 ### Step 1: Create a Dockerfile
 
 Create a `Dockerfile` in the root of your project directory with the following content:
@@ -194,3 +237,4 @@ If you encounter any issues, ensure the following:
 - The `mod_headers` module is enabled and loaded.
 - The `ServerName` directive is set to suppress warnings.
 - File permissions are correctly set for the application files and directories.
+
