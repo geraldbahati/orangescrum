@@ -1091,3 +1091,110 @@ ExceptionRenderer::__construct() - CORE/Cake/Error/ExceptionRenderer.php, line 9
 ErrorHandler::handleException() - CORE/Cake/Error/ErrorHandler.php, line 126
 [main] - [internal], line ??
 
+2024-07-29 12:46:04 Warning: Warning (2): Declaration of User::afterSave($created) should be compatible with Model::afterSave($created, $options = Array) in [/var/www/html/app/Model/User.php, line 3]
+Trace:
+ErrorHandler::handleError() - CORE/Cake/Error/ErrorHandler.php, line 230
+include - APP/Model/User.php, line 3
+App::load() - CORE/Cake/Core/App.php, line 547
+spl_autoload_call - [internal], line ??
+class_exists - [internal], line ??
+ClassRegistry::init() - CORE/Cake/Utility/ClassRegistry.php, line 146
+Controller::loadModel() - CORE/Cake/Controller/Controller.php, line 741
+AppController::beforeFilter() - APP/Controller/AppController.php, line 67
+UsersController::beforeFilter() - APP/Controller/UsersController.php, line 49
+CakeEventManager::dispatch() - CORE/Cake/Event/CakeEventManager.php, line 243
+Controller::startupProcess() - CORE/Cake/Controller/Controller.php, line 677
+Dispatcher::_invoke() - CORE/Cake/Routing/Dispatcher.php, line 189
+Dispatcher::dispatch() - CORE/Cake/Routing/Dispatcher.php, line 167
+[main] - APP/webroot/index.php, line 179
+
+2024-07-29 12:46:04 Warning: Warning (2): Use of undefined constant PAGE_NAME - assumed 'PAGE_NAME' (this will throw an Error in a future version of PHP) in [/var/www/html/app/Controller/AppController.php, line 152]
+Trace:
+ErrorHandler::handleError() - CORE/Cake/Error/ErrorHandler.php, line 230
+AppController::beforeFilter() - APP/Controller/AppController.php, line 152
+UsersController::beforeFilter() - APP/Controller/UsersController.php, line 49
+CakeEventManager::dispatch() - CORE/Cake/Event/CakeEventManager.php, line 243
+Controller::startupProcess() - CORE/Cake/Controller/Controller.php, line 677
+Dispatcher::_invoke() - CORE/Cake/Routing/Dispatcher.php, line 189
+Dispatcher::dispatch() - CORE/Cake/Routing/Dispatcher.php, line 167
+[main] - APP/webroot/index.php, line 179
+
+2024-07-29 12:46:04 Warning: Warning (2): Declaration of Type::afterSave($created) should be compatible with Model::afterSave($created, $options = Array) in [/var/www/html/app/Model/Type.php, line 65]
+Trace:
+ErrorHandler::handleError() - CORE/Cake/Error/ErrorHandler.php, line 230
+include - CORE/Cake/Core/App.php, line 547
+App::load() - CORE/Cake/Core/App.php, line 547
+spl_autoload_call - [internal], line ??
+class_exists - [internal], line ??
+ClassRegistry::init() - CORE/Cake/Utility/ClassRegistry.php, line 146
+Controller::loadModel() - CORE/Cake/Controller/Controller.php, line 741
+AppController::beforeFilter() - APP/Controller/AppController.php, line 1437
+UsersController::beforeFilter() - APP/Controller/UsersController.php, line 49
+CakeEventManager::dispatch() - CORE/Cake/Event/CakeEventManager.php, line 243
+Controller::startupProcess() - CORE/Cake/Controller/Controller.php, line 677
+Dispatcher::_invoke() - CORE/Cake/Routing/Dispatcher.php, line 189
+Dispatcher::dispatch() - CORE/Cake/Routing/Dispatcher.php, line 167
+[main] - APP/webroot/index.php, line 179
+
+2024-07-29 12:46:04 Warning: Warning (2): Illegal string offset 'isEmail' in [/var/www/html/app/Controller/UsersController.php, line 303]
+Trace:
+ErrorHandler::handleError() - CORE/Cake/Error/ErrorHandler.php, line 230
+UsersController::signup() - APP/Controller/UsersController.php, line 303
+ReflectionMethod::invokeArgs() - [internal], line ??
+Controller::invokeAction() - CORE/Cake/Controller/Controller.php, line 491
+Dispatcher::_invoke() - CORE/Cake/Routing/Dispatcher.php, line 193
+Dispatcher::dispatch() - CORE/Cake/Routing/Dispatcher.php, line 167
+[main] - APP/webroot/index.php, line 179
+
+2024-07-29 12:46:04 Warning: Warning (2): Use of undefined constant SHOW_SIGNUP_POPUP - assumed 'SHOW_SIGNUP_POPUP' (this will throw an Error in a future version of PHP) in [/var/www/html/app/View/Layouts/default_outer.ctp, line 46]
+Trace:
+ErrorHandler::handleError() - CORE/Cake/Error/ErrorHandler.php, line 230
+include - APP/View/Layouts/default_outer.ctp, line 46
+View::_evaluate() - CORE/Cake/View/View.php, line 971
+View::_render() - CORE/Cake/View/View.php, line 933
+View::renderLayout() - CORE/Cake/View/View.php, line 546
+View::render() - CORE/Cake/View/View.php, line 481
+Controller::render() - CORE/Cake/Controller/Controller.php, line 963
+Dispatcher::_invoke() - CORE/Cake/Routing/Dispatcher.php, line 200
+Dispatcher::dispatch() - CORE/Cake/Routing/Dispatcher.php, line 167
+[main] - APP/webroot/index.php, line 179
+
+2024-07-29 12:46:04 Warning: Warning (2): Use of undefined constant SHOW_SIGNUP_POPUP - assumed 'SHOW_SIGNUP_POPUP' (this will throw an Error in a future version of PHP) in [/var/www/html/app/View/Layouts/default_outer.ctp, line 65]
+Trace:
+ErrorHandler::handleError() - CORE/Cake/Error/ErrorHandler.php, line 230
+include - APP/View/Layouts/default_outer.ctp, line 65
+View::_evaluate() - CORE/Cake/View/View.php, line 971
+View::_render() - CORE/Cake/View/View.php, line 933
+View::renderLayout() - CORE/Cake/View/View.php, line 546
+View::render() - CORE/Cake/View/View.php, line 481
+Controller::render() - CORE/Cake/Controller/Controller.php, line 963
+Dispatcher::_invoke() - CORE/Cake/Routing/Dispatcher.php, line 200
+Dispatcher::dispatch() - CORE/Cake/Routing/Dispatcher.php, line 167
+[main] - APP/webroot/index.php, line 179
+
+2024-07-29 12:46:04 Warning: Warning (2): Use of undefined constant CLIENT_ID_SIGNUP - assumed 'CLIENT_ID_SIGNUP' (this will throw an Error in a future version of PHP) in [/var/www/html/app/View/Layouts/default_outer.ctp, line 154]
+Trace:
+ErrorHandler::handleError() - CORE/Cake/Error/ErrorHandler.php, line 230
+include - APP/View/Layouts/default_outer.ctp, line 154
+View::_evaluate() - CORE/Cake/View/View.php, line 971
+View::_render() - CORE/Cake/View/View.php, line 933
+View::renderLayout() - CORE/Cake/View/View.php, line 546
+View::render() - CORE/Cake/View/View.php, line 481
+Controller::render() - CORE/Cake/Controller/Controller.php, line 963
+Dispatcher::_invoke() - CORE/Cake/Routing/Dispatcher.php, line 200
+Dispatcher::dispatch() - CORE/Cake/Routing/Dispatcher.php, line 167
+[main] - APP/webroot/index.php, line 179
+
+2024-07-29 12:46:04 Warning: Warning (2): Use of undefined constant REDIRECT_URI_SIGNUP - assumed 'REDIRECT_URI_SIGNUP' (this will throw an Error in a future version of PHP) in [/var/www/html/app/View/Layouts/default_outer.ctp, line 156]
+Trace:
+ErrorHandler::handleError() - CORE/Cake/Error/ErrorHandler.php, line 230
+include - APP/View/Layouts/default_outer.ctp, line 156
+View::_evaluate() - CORE/Cake/View/View.php, line 971
+View::_render() - CORE/Cake/View/View.php, line 933
+View::renderLayout() - CORE/Cake/View/View.php, line 546
+View::render() - CORE/Cake/View/View.php, line 481
+Controller::render() - CORE/Cake/Controller/Controller.php, line 963
+Dispatcher::_invoke() - CORE/Cake/Routing/Dispatcher.php, line 200
+Dispatcher::dispatch() - CORE/Cake/Routing/Dispatcher.php, line 167
+[main] - APP/webroot/index.php, line 179
+

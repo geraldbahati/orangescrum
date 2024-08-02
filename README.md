@@ -155,6 +155,54 @@ volumes:
 db_data:
 ```
 
+#### For Windows users
+
+```yaml
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: orangescrum
+      MYSQL_USER: orangescrum_user
+      MYSQL_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/mysql
+      - C:\path\to\your\database.sql:/docker-entrypoint-initdb.d/database.sql
+    ports:
+      - "3307:3306"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "8081:80"
+
+  mysql-client:
+    image: mysql:latest
+    command: sleep infinity
+    depends_on:
+      - db
+    networks:
+      - default
+
+volumes:
+  db_data:
+```
+
 ### Step 3: Prepare the Database Initialization File
 
 Ensure your `database.sql` file is in the root of your project directory. This file will be used to initialize the database.
